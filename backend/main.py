@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import ast
 import hashlib
 import json
 import os
@@ -154,26 +155,59 @@ def _log_action(message_id: str, action_type: str, payload: dict[str, Any]) -> N
 def _extract_json(text: str) -> dict[str, Any] | None:
     if not text:
         return None
-    # Handle model responses like ```json ... ```
-    fenced = re.search(r"```(?:json)?\s*(\{.*\})\s*```", text, flags=re.DOTALL | re.IGNORECASE)
-    if fenced:
+
+    def _parse_candidate(candidate: str) -> dict[str, Any] | None:
+        cleaned = candidate.strip()
+        if not cleaned:
+            return None
+
+        # Remove a leading language marker if the model emits "json\n{...}".
+        cleaned = re.sub(r"^\s*json\s*", "", cleaned, flags=re.IGNORECASE).strip()
+        # Tolerate trailing commas in objects/arrays.
+        cleaned = re.sub(r",\s*([}\]])", r"\1", cleaned)
+        # Normalize smart quotes commonly returned by LLMs.
+        cleaned = cleaned.replace("“", '"').replace("”", '"').replace("’", "'").replace("‘", "'")
+
         try:
-            return json.loads(fenced.group(1))
+            parsed = json.loads(cleaned)
+            return parsed if isinstance(parsed, dict) else None
         except json.JSONDecodeError:
             pass
 
-    start = text.find("{")
-    end = text.rfind("}")
-    if start == -1 or end == -1 or end <= start:
-        return None
-    candidate = text[start : end + 1]
-    try:
-        return json.loads(candidate)
-    except json.JSONDecodeError:
-        return None
+        # Fallback for Python-literal-like outputs: {'k': 'v', 'x': None}
+        try:
+            parsed = ast.literal_eval(cleaned)
+            return parsed if isinstance(parsed, dict) else None
+        except (SyntaxError, ValueError):
+            return None
+
+    # 1) Direct parse for pure JSON responses.
+    direct = _parse_candidate(text)
+    if direct:
+        return direct
+
+    # 2) Parse fenced blocks such as ```json ... ```.
+    for match in re.finditer(r"```(?:json)?\s*([\s\S]*?)\s*```", text, flags=re.IGNORECASE):
+        parsed = _parse_candidate(match.group(1))
+        if parsed:
+            return parsed
+
+    # 3) Scan the full text for the first valid JSON object.
+    decoder = json.JSONDecoder()
+    for idx, char in enumerate(text):
+        if char != "{":
+            continue
+        try:
+            parsed, _ = decoder.raw_decode(text[idx:])
+            if isinstance(parsed, dict):
+                return parsed
+        except json.JSONDecodeError:
+            continue
+
+    return None
 
 
-def _gemini_generate(parts: list[dict[str, Any]]) -> str | None:
+def _gemini_generate(parts: list[dict[str, Any]]) -> tuple[str | None, str | None]:
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
     body = {
         "contents": [{"parts": parts}],
@@ -185,49 +219,73 @@ def _gemini_generate(parts: list[dict[str, Any]]) -> str | None:
     }
     resp = requests.post(url, json=body, timeout=25)
     if resp.status_code != 200:
-        return None
+        detail = ""
+        try:
+            err = resp.json().get("error", {})
+            detail = str(err.get("message", "")).strip()
+        except Exception:
+            detail = (resp.text or "").strip()[:300]
+        app.logger.warning(
+            "Gemini generateContent failed with status=%s detail=%s",
+            resp.status_code,
+            detail or "<empty>",
+        )
+        return None, f"gemini_http_{resp.status_code}: {detail}" if detail else f"gemini_http_{resp.status_code}"
     data = resp.json()
-    return (
-        data.get("candidates", [{}])[0]
-        .get("content", {})
-        .get("parts", [{}])[0]
-        .get("text")
-    )
+    candidates = data.get("candidates") or []
+    if not candidates:
+        app.logger.warning("Gemini response had no candidates")
+        return None, "gemini_no_candidates"
+
+    parts_out = candidates[0].get("content", {}).get("parts", [])
+    text_parts = [part.get("text", "") for part in parts_out if isinstance(part, dict) and part.get("text")]
+    if not text_parts:
+        app.logger.warning("Gemini response candidate had no text parts")
+        return None, "gemini_candidate_no_text"
+    return "\n".join(text_parts).strip(), None
 
 
-def _repair_json_once(raw_text: str) -> dict[str, Any] | None:
+def _repair_json_once(raw_text: str) -> tuple[dict[str, Any] | None, str | None]:
     if not raw_text:
-        return None
+        return None, "repair_input_empty"
     repair_prompt = (
         "Convert the following content into valid JSON only. "
         "Do not add explanation. Preserve intent and keys.\n\n"
         + raw_text
     )
-    repaired_text = _gemini_generate([{"text": repair_prompt}])
+    repaired_text, repair_error = _gemini_generate([{"text": repair_prompt}])
     if not repaired_text:
-        return None
-    return _extract_json(repaired_text)
+        return None, repair_error or "repair_generation_failed"
+    repaired = _extract_json(repaired_text)
+    if repaired:
+        return repaired, None
+    return None, "repair_parse_failed"
 
 
-def _gemini_structured(prompt: str, image_b64: str | None, mime_type: str | None) -> dict[str, Any] | None:
+def _gemini_structured(prompt: str, image_b64: str | None, mime_type: str | None) -> tuple[dict[str, Any] | None, str | None]:
     if not GEMINI_API_KEY:
-        return None
+        return None, "gemini_api_key_missing"
 
     parts: list[dict[str, Any]] = [{"text": prompt}]
     if image_b64 and mime_type:
         parts.append({"inline_data": {"mime_type": mime_type, "data": image_b64}})
 
     try:
-        text = _gemini_generate(parts)
+        text, generation_error = _gemini_generate(parts)
+        if not text:
+            return None, generation_error or "generation_failed"
         parsed = _extract_json(text or "")
         if parsed:
-            return parsed
-        return _repair_json_once(text or "")
-    except Exception:
-        return None
+            return parsed, None
+        repaired, repair_error = _repair_json_once(text or "")
+        if repaired:
+            return repaired, None
+        return None, repair_error or "parse_failed"
+    except Exception as exc:
+        return None, f"gemini_exception: {exc.__class__.__name__}"
 
 
-def _fallback(message: str) -> dict[str, Any]:
+def _fallback(message: str, reason: str | None = None) -> dict[str, Any]:
     risk = "medium" if any(k in message.lower() for k in ["fight", "weapon", "blood"]) else "uncertain"
     confidence = 0.5 if risk == "medium" else 0.0
     return {
@@ -237,7 +295,8 @@ def _fallback(message: str) -> dict[str, Any]:
         "entities": [],
         "location_name": None,
         "possible_location": None,
-        "rationale": "Fallback due to unavailable structured response.",
+        "rationale": f"Fallback due to unavailable structured response ({reason})." if reason else "Fallback due to unavailable structured response.",
+        "recommended_actions": [],
     }
 
 
@@ -587,15 +646,20 @@ def analyze() -> Any:
     _save_message(user_message_id, session_id, "user", message, image_hash)
 
     prompt = (
-        "Return STRICT JSON only with keys: summary, risk_level, confidence, entities, location_name, possible_location, rationale, recommended_actions. "
-        "risk_level must be low|medium|high|uncertain and confidence must be in [0,1]. "
-        "location_name must be a short canonical place/entity name only (e.g., 'Shaniwar Wada'), or null if unknown. "
-        "possible_location can include city/state/country context. "
-        "Use cautious language. User query: "
+        "You are an image understanding assistant for safety triage. "
+        "Return one STRICT JSON object only (no markdown, no backticks, no extra text). "
+        'Schema: {"summary": string, "risk_level": "low|medium|high|uncertain", "confidence": number_0_to_1, '
+        '"entities": string[], "location_name": string|null, "possible_location": string|null, '
+        '"rationale": string, "recommended_actions": string[]}. '
+        "location_name must be a short canonical place/entity name only (for example, Shaniwar Wada), or null if unknown. "
+        "possible_location may include city/state/country context. "
+        "Use cautious language and avoid certainty unless clearly visible. "
+        "User query: "
         + message
     )
 
-    structured = _gemini_structured(prompt, image_b64, mime_type) or _fallback(message)
+    structured_data, model_error = _gemini_structured(prompt, image_b64, mime_type)
+    structured = structured_data or _fallback(message, model_error)
     structured = _normalize_structured_output(structured, message)
 
     risk_level = str(structured["risk_level"]).lower()
