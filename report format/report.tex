@@ -1,0 +1,254 @@
+%This is a very basic  BE PROJECT PRELIMINARY template.
+
+%############################################# 
+%#########Author :  PROJECT###########
+%#########COMPUTER ENGINEERING############
+
+
+\documentclass[oneside,a4paper,12pt]{report}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+%\usepackage{showframe}
+%\hoffset = 8.9436619718309859154929577464789pt
+%\voffset = 13.028169014084507042253521126761pt
+
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyfoot[CE]{College_Name, Department of Computer Engineering 2025-26}
+  \fancyfoot[RE]{\thepage}
+}
+\pagestyle{fancy}
+\fancyhead{}
+\renewcommand{\headrulewidth}{0pt}
+\footskip = 0.625in
+\cfoot{}
+\rfoot{}
+
+\usepackage[]{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes,snakes,automata,backgrounds,petri,positioning,fit}
+
+\usepackage{tabularx}
+\usepackage{longtable}
+
+\usepackage[nottoc,notlot,notlof,numbib]{tocbibind}
+\usepackage[titletoc]{appendix}
+\usepackage{titletoc}
+\renewcommand{\appendixname}{Annexure}
+\renewcommand{\bibname}{References}
+
+\setcounter{secnumdepth}{5}
+
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{multirow}
+
+\usepackage[ruled,vlined]{algorithm2e}
+
+\begin{document}
+
+\setlength{\parindent}{0mm}
+\begin{center}
+{\bfseries SAVITRIBAI PHULE PUNE UNIVERSITY \\}
+ \vspace*{1\baselineskip}
+\includegraphics[width=100pt]{logo.png}
+ \vspace*{0.5\baselineskip}
+ 
+{\bfseries A FINAL PROJECT REPORT \\}
+{\bfseries ON \\}
+ \vspace*{1\baselineskip}
+{\bfseries \fontsize{16}{12} \selectfont Image Geolocation and Hazard-Aware Response \\ \vspace*{2\baselineskip}}
+{\fontsize{12}{12} \selectfont SUBMITTED TOWARDS THE
+ \\PARTIAL FULFILLMENT OF THE REQUIREMENTS OF \\
+
+\vspace*{1\baselineskip}}
+{\bfseries \fontsize{14}{12} \selectfont BACHELOR OF ENGINEERING  \\
+\vspace{1\baselineskip}} 
+{\bfseries \fontsize{14}{12} \selectfont BY \\}
+
+\begin{tabular}{l @{\hspace{25mm}} l}
+Bhargav Dave & Exam No: B401220231 \\
+Nibodh Daware & Exam No: B401220232  \\
+Kiran Raut & Exam No: B401220347 \\
+Shreyash Borge & Exam No: B401220216\\
+\end{tabular}
+\vspace*{1\baselineskip}\\
+{\bfseries \fontsize{14}{12} \selectfont Under The Guidance of \\  
+\vspace{1mm}} 
+Mrs. Dipti S. Chaudhari\\
+\vspace*{1\baselineskip} 
+\includegraphics[width=100pt]{pccoer.jpg} \\
+{\bfseries \fontsize{14}{12} \selectfont DEPARTMENT OF COMPUTER ENGINEERING \\
+Pimpri Chinchwad College of Engineering And Research \\
+Ravet \\
+A.Y. 2025--2026
+}
+\end{center}
+
+\newpage
+
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=100pt]{pccoer.jpg}
+\end{figure}
+
+{\bfseries \fontsize{14}{12} \selectfont \centerline{Pimpri Chinchwad College Of Engineering And Research}
+\centerline{DEPARTMENT OF COMPUTER ENGINEERING}
+\vspace*{2\baselineskip}} 
+
+
+{\bfseries \fontsize{16}{12} \selectfont \centerline{CERTIFICATE} 
+\vspace{1\baselineskip}} 
+
+\centerline{This is to certify that the Project Entitled}
+\vspace*{1\baselineskip} 
+
+
+{\bfseries \fontsize{14}{12} \selectfont \centerline{Image Geolocation and Hazard-Aware Response}
+\vspace*{1\baselineskip}}
+
+\centerline{Submitted by}
+\begin{center}
+\begin{tabular}{l @{\hspace{25mm}} l}
+Bhargav Dave & Exam No: B401220231 \\
+Nibodh Daware & Exam No: B401220232  \\
+Kiran Raut & Exam No: B401220347 \\
+Shreyash Borge & Exam No: B401220216\\
+\end{tabular}
+\end{center}
+\vspace*{1\baselineskip} 
+is a bonafide work carried out by Students under the supervision of {\bfseries Prof. Mrs. Dipti S. Chaudhari} and it is submitted towards the partial fulfillment of the requirement of {\bfseries Bachelor of Engineering} (Computer Engineering) Project.\\\\
+
+\bgroup
+\def\arraystretch{0.7}
+\begin{tabular}{c c }
+Prof. Mrs. Dipti S. Chaudhari &  \hspace{50 mm} Dr. Vijay Kotkar \\								
+{\bfseries Internal Guide}   &  {\bfseries \hspace{50 mm} H.O.D} \\
+{\bfseries Dept. of Computer Engg.}  &	{\bfseries \hspace{50 mm}Dept. of Computer Engg.}  \\
+\\
+\vspace*{8\baselineskip} 
+\end{tabular}
+
+\begin{tabular}{c c }
+Prof. Shivganga V. Gavhane &  \hspace{50 mm} Prof.Dr. H.U.Tiwari \\		{\bfseries Project Co-ordinator}   &  {\bfseries \hspace{50 mm} Director} \\ 
+\\\\
+
+\vspace*{2\baselineskip} 
+{\bfseries EXTERNAL SIGNATURE} & \hspace{60 mm} 
+\end{tabular}
+\egroup
+
+
+
+%}
+
+
+
+\newpage
+
+%\pictcertificate{TITLE OF BE PROJECT}{Student Name}{Exam Seat No}{Guide Name}
+\setcounter{page}{0}
+
+\cfoot{Department of Computer Engineering, PCCOER Ravet, 2025-26}
+\rfoot{\thepage}
+\pagenumbering{Roman}
+%\pictack{BE PROJECT TITLE}{Guide Name}
+
+		
+\input{chapters/acknowledgement}
+\input{chapters/abstract}
+
+
+% \maketitle
+\tableofcontents
+\listoffigures 
+\listoftables
+
+
+
+\clearpage
+\pagenumbering{arabic}
+
+
+
+  \titleformat{\chapter}[display]
+{\fontsize{16}{15}\bfseries\filcenter}
+{\LARGE\MakeUppercase{\chaptertitlename}~\thechapter}
+{1pc}
+{\bfseries\LARGE\MakeUppercase}
+[\vspace{1\baselineskip}]
+
+
+
+
+
+
+
+\setlength{\parindent}{11mm}
+\input{chapters/chapter1}
+
+\input{chapters/chapter2}
+
+\input{chapters/chapter3}
+
+\input{chapters/chapter4}
+
+\input{chapters/chapter5}
+
+\input{chapters/chapter6}
+
+\input{chapters/chapter7}
+
+\input{chapters/chapter8}
+
+
+
+
+			
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+ 
+ 
+ 
+\nocite{*}
+\bibliographystyle{ieeetr}
+\bibliography{biblo}
+
+
+\begin{appendices}
+
+
+
+\input{chapters/PlagReport}
+
+\input{chapters/Copyright}
+
+\input{chapters/Patent}
+
+\input{chapters/ResearchPublication}
+
+\input{chapters/Certificates}
+
+\input{chapters/ProjCompetition}
+
+\input{chapters/Sponsorship}
+
+\end{appendices}
+
+
+\end{document}

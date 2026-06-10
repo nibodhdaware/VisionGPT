@@ -1,0 +1,45 @@
+%%{init: {'theme': 'neutral', 'themeVariables': {'fontFamily': 'Helvetica', 'fontSize': '22px', 'lineColor': '#374151', 'textColor': '#111827', 'primaryTextColor': '#111827', 'secondaryTextColor': '#111827', 'tertiaryTextColor': '#111827', 'background': '#ffffff'}, 'flowchart': {'nodeSpacing': 85, 'rankSpacing': 110, 'curve': 'linear'}}}%%
+flowchart TB
+    classDef default fill:#f7fbff,stroke:#3b82f6,stroke-width:1.5px,color:#111827;
+    classDef decision fill:#fff7ed,stroke:#f59e0b,stroke-width:1.5px,color:#111827;
+    classDef store fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#111827;
+    classDef endpoint fill:#eef2ff,stroke:#6366f1,stroke-width:1.5px,color:#111827;
+    classDef fallback fill:#fff1f2,stroke:#ef4444,stroke-width:1.5px,color:#111827;
+
+    U[User in Web UI\nReact + Vite + TypeScript] -->|Image Upload + Session ID| A[/POST /api/chat/analyze/]
+    A --> B[Flask API Layer]
+    B --> C[Input Validation\nPydantic + Size Guard]
+    C --> D[Gemini Vision Call\nStrict JSON Prompt]
+    D --> E{Valid JSON?}
+    E -->|Yes| F[Normalize Output\nRisk + Confidence + Place]
+    E -->|No| G[Repair Once]
+    G --> H{Repair Success?}
+    H -->|Yes| F
+    H -->|No| I[Safe Fallback\nuncertain + ask_for_context]
+    I --> J[Policy Action Mapping]
+    F --> J
+    J --> K[(SQLite)]
+    K -->|messages/model_outputs/actions/incidents| B
+    J --> L[Response Payload\nreply, risk, actions]
+    L --> U
+
+    subgraph UserActions[User Action Flows]
+      U -->|Learn More| M[/GET /api/actions/learn-more/]
+      M --> N[Wikipedia Resolver]
+      N --> U
+
+      U -->|Report + Confirm| O[/POST /api/actions/report/]
+      O --> P[Rate Limit + Duplicate Guard]
+      P --> Q[(SQLite incidents)]
+      O --> R{WhatsApp notify?}
+      R -->|If enabled + confirmed| S[WHAPI Send Attempt]
+      S --> U
+      R -->|No| U
+    end
+
+    class U,B,C,D,F,G,J,L,N,P,S default
+    class E,H,R decision
+    class K,Q store
+    class A,M,O endpoint
+    class I fallback
+    style UserActions fill:#fafafa,stroke:#9ca3af,stroke-width:1px,color:#111827

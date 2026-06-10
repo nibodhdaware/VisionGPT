@@ -1,0 +1,257 @@
+\chapter{Software Requirement Specification}
+
+\section{Introduction}
+\subsection{Purpose and Scope of Document}
+The Software Requirement Specification describes the functional and non-functional requirements of the Image Geolocation and Hazard-Aware Response system. It defines the users, use cases, data model, functional behavior, system constraints, and interfaces required for implementation and validation.
+
+The scope of the system includes:
+\begin{itemize}
+\item Image upload through a web interface.
+\item Vision-based scene analysis using a multimodal model.
+\item Structured JSON response validation and normalization.
+\item Risk-level classification into low, medium, high, or uncertain.
+\item Deterministic action rendering based on risk and confidence.
+\item Learn-more, map, safety tips, explanation, and report actions.
+\item Local persistence of sessions, messages, model outputs, actions, and incidents.
+\end{itemize}
+
+\subsection{Characteristics of a Software Requirement Specification}
+An effective SRS for this project must be accurate, complete, testable, traceable, and prioritized. Accuracy is important because incorrect risk handling may mislead users. Completeness is required so that upload, analysis, action, and logging flows are all covered. Testability is required so that every major requirement can be verified through manual or automated testing.
+
+\subsection{Overview of Responsibilities of Developer}
+The development responsibilities include frontend design, backend API implementation, multimodal model integration, database schema design, validation logic, safety policy implementation, and testing. The developer must ensure that the system does not perform automatic authority dispatch and that all report actions are explicitly confirmed by the user.
+
+\section{Usage Scenario}
+The system is designed for users who want to understand an image, identify possible place context, or receive safety-aware guidance. A user opens the web application, uploads an image, and submits it for analysis. The backend sends the image and prompt to the multimodal model, validates the returned JSON, applies policy rules, saves logs, and returns a response with actions.
+
+\subsection{User Profiles}
+\begin{table}[H]
+\centering
+\caption{System Entities Description}
+\label{tab:entities}
+\def\arraystretch{1.5}
+\begin{tabularx}{\textwidth}{|c|c|X|}
+\hline
+\textbf{Sr. No.} & \textbf{Actor} & \textbf{Description} \\ \hline
+1 & General User & Uploads an image and receives scene explanation, location estimate, risk level, and actions. \\ \hline
+2 & Public Safety Observer & Uses the report flow when a hazardous or suspicious image is detected and confirms incident logging. \\ \hline
+3 & Reviewer / Evaluator & Reviews stored model outputs, actions, confidence values, and incident records for project evaluation. \\ \hline
+4 & System Administrator & Configures API keys, database path, upload size, and optional WhatsApp notification settings. \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Use Cases}
+\begin{table}[H]
+\centering
+\caption{Use Cases}
+\label{tab:usecases}
+\def\arraystretch{1.4}
+\begin{tabularx}{\textwidth}{|c|X|X|c|X|}
+\hline
+\textbf{Sr. No.} & \textbf{Use Case} & \textbf{Description} & \textbf{Actors} & \textbf{Assumption}\\ \hline
+1 & Analyze Image & User uploads an image and receives a structured scene interpretation. & User & Image format is supported. \\ \hline
+2 & Learn More & User selects learn-more action for a normal landmark or place. & User & Place/entity is detected. \\ \hline
+3 & Open Map & User opens a map search for the detected location. & User & Location guess is available. \\ \hline
+4 & View Explanation & User checks why a result was produced. & User & Rationale is returned or fallback rationale exists. \\ \hline
+5 & Report Suspicious Activity & User confirms incident reporting for high-risk output. & User & Confirmation is required before logging. \\ \hline
+6 & Review Logs & Evaluator checks sessions, actions, and incidents. & Reviewer & Database records are available. \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Use Case View}
+The use case view represents interaction between users and the multimodal assistant. The primary user uploads an image and receives analysis. Based on the response, the user may learn more, open a map, view rationale, or confirm a report. The reviewer interacts with logs for evaluation.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[
+actor/.style={rectangle, draw, rounded corners, minimum width=22mm, minimum height=9mm, align=center},
+usecase/.style={ellipse, draw, minimum width=36mm, minimum height=9mm, align=center},
+line/.style={->, thick, shorten >=2pt, shorten <=2pt}
+]
+\node[actor] (user) at (0,0) {User};
+\node[actor] (reviewer) at (0,-2.2) {Reviewer};
+\node[usecase] (upload) at (4.4,1.3) {Upload Image};
+\node[usecase] (analyze) at (4.4,0.35) {Analyze Scene};
+\node[usecase] (learn) at (4.4,-0.6) {Learn More};
+\node[usecase] (report) at (4.4,-1.55) {Confirm Report};
+\node[usecase] (logs) at (4.4,-2.5) {Review Logs};
+\node[draw, rounded corners, fit=(upload)(analyze)(learn)(report)(logs), inner sep=6mm, label=above:{VisionGPT System}] (box) {};
+\draw[line] (user.east) -- (upload.west);
+\draw[line] (user.east) -- (analyze.west);
+\draw[line] (user.east) -- (learn.west);
+\draw[line] (user.east) -- (report.west);
+\draw[line] (reviewer.east) -- (logs.west);
+\end{tikzpicture}
+}
+\caption{Use case diagram}
+\label{fig:usecase}
+\end{figure}
+
+\section{Data Model and Description}
+\subsection{Data Description}
+The system uses SQLite as the persistence layer. It stores session data, messages, structured model outputs, user actions, and incident records. Raw images are not stored by default; an image hash is saved for traceability and privacy.
+
+\subsection{Data Objects and Relationships}
+The main database tables are:
+\begin{itemize}
+\item \textbf{sessions}: Stores conversation sessions.
+\item \textbf{messages}: Stores user and assistant messages with optional image hash.
+\item \textbf{model\_outputs}: Stores risk level, confidence, and full JSON payload.
+\item \textbf{actions}: Stores user-selected actions such as learn-more and report.
+\item \textbf{incidents}: Stores user-confirmed incident reports and optional notification status.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+entity/.style={rectangle, draw, rounded corners, minimum width=28mm, minimum height=10mm, align=center},
+rel/.style={->, thick}
+]
+\node[entity] (sessions) at (0,0) {sessions\\id, created\_at};
+\node[entity] (messages) at (5,0) {messages\\id, session\_id, role};
+\node[entity] (outputs) at (10,1.5) {model\_outputs\\risk, confidence, json};
+\node[entity] (actions) at (10,0) {actions\\type, payload};
+\node[entity] (incidents) at (10,-1.5) {incidents\\reason, confirmed};
+\draw[rel] (sessions) -- node[above]{1:N} (messages);
+\draw[rel] (messages) -- node[above, sloped]{1:N} (outputs);
+\draw[rel] (messages) -- node[above]{1:N} (actions);
+\draw[rel] (messages) -- node[below, sloped]{1:N} (incidents);
+\end{tikzpicture}
+\caption{ER diagram}
+\label{fig:er}
+\end{figure}
+
+\section{Functional Model and Description}
+\subsection{Data Flow Diagram}
+The data flow starts when a user submits an image. The frontend sends a multipart request to the backend. The backend validates input, hashes the image, invokes Gemini Vision, parses the model response, applies policy rules, saves records, and returns a response to the frontend.
+
+\subsubsection{Level 0 Data Flow Diagram}
+\begin{figure}[H]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[
+process/.style={rectangle, draw, rounded corners, minimum width=36mm, minimum height=12mm, align=center},
+external/.style={rectangle, draw, minimum width=28mm, minimum height=10mm, align=center},
+flow/.style={->, thick, shorten >=2pt, shorten <=2pt}
+]
+\node[external] (user) at (0,0) {User};
+\node[process] (system) at (4.8,0) {VisionGPT\\System};
+\node[external] (model) at (9.6,1.45) {Gemini\\Vision};
+\node[external] (db) at (9.6,-1.45) {SQLite\\Logs};
+\draw[flow] ([yshift=2mm]user.east) -- node[above]{image request} ([yshift=2mm]system.west);
+\draw[flow] ([yshift=-2mm]system.west) -- node[below]{response} ([yshift=-2mm]user.east);
+\draw[flow] (system.east) -- node[above, sloped]{prompt} (model.west);
+\draw[flow] (model.west) -- node[below, sloped]{JSON} (system.east);
+\draw[flow] (system.east) -- node[below, sloped]{audit records} (db.west);
+\end{tikzpicture}
+}
+\caption{DFD Level 0 diagram}
+\label{fig:dfd0}
+\end{figure}
+
+\subsubsection{Level 1 Data Flow Diagram}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+process/.style={rectangle, draw, rounded corners, minimum width=28mm, minimum height=10mm, align=center},
+store/.style={cylinder, draw, shape border rotate=90, aspect=0.25, minimum height=13mm, minimum width=18mm, align=center},
+flow/.style={->, thick}
+]
+\node[process] (upload) at (0,0) {1. Upload\\Image};
+\node[process] (infer) at (4,0) {2. Gemini\\Inference};
+\node[process] (policy) at (8,0) {3. Risk Policy\\and Actions};
+\node[process] (reply) at (12,0) {4. Response\\to User};
+\node[store] (db) at (8,-2.2) {SQLite\\DB};
+\draw[flow] (upload) -- (infer);
+\draw[flow] (infer) -- (policy);
+\draw[flow] (policy) -- (reply);
+\draw[flow] (upload) |- (db);
+\draw[flow] (policy) -- (db);
+\draw[flow] (db) -- (reply);
+\end{tikzpicture}
+\caption{DFD Level 1 diagram}
+\label{fig:dfd1}
+\end{figure}
+
+\subsection{Description of Functions}
+The major functions of the system are image upload, model inference, JSON extraction, JSON repair, output normalization, hazard signal detection, action generation, learn-more lookup, map link generation, incident reporting, and audit logging.
+
+\subsection{Activity Diagram}
+The activity diagram represents the end-to-end workflow from image upload to action selection.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+activity/.style={rectangle, draw, rounded corners, minimum width=42mm, minimum height=8mm, align=center},
+decision/.style={diamond, draw, aspect=2, align=center, inner sep=1mm},
+flow/.style={->, thick}
+]
+\node[circle, fill=black, minimum size=4mm] (start) at (0,0) {};
+\node[activity] (upload) at (0,-1) {Upload image};
+\node[activity] (analyze) at (0,-2.1) {Analyze with Gemini Vision};
+\node[activity] (normalize) at (0,-3.2) {Validate and normalize JSON};
+\node[decision] (risk) at (0,-4.5) {Risk\\high?};
+\node[activity] (report) at (-3.3,-6) {Show report and safety actions};
+\node[activity] (learn) at (3.3,-6) {Show learn-more and map actions};
+\node[activity] (persist) at (0,-7.4) {Persist logs and actions};
+\node[circle, draw, thick, minimum size=5mm] (end) at (0,-8.5) {};
+\node[circle, fill=black, minimum size=3mm] at (0,-8.5) {};
+\draw[flow] (start) -- (upload);
+\draw[flow] (upload) -- (analyze);
+\draw[flow] (analyze) -- (normalize);
+\draw[flow] (normalize) -- (risk);
+\draw[flow] (risk) -- node[above, sloped]{yes} (report);
+\draw[flow] (risk) -- node[above, sloped]{no} (learn);
+\draw[flow] (report) |- (persist);
+\draw[flow] (learn) |- (persist);
+\draw[flow] (persist) -- (end);
+\end{tikzpicture}
+\caption{Activity diagram}
+\label{fig:activity}
+\end{figure}
+
+\subsection{Non Functional Requirements}
+\begin{itemize}
+\item \textbf{Performance}: The MVP targets response latency below 8 seconds for common demo cases.
+\item \textbf{Reliability}: Invalid model output must trigger repair or safe fallback.
+\item \textbf{Security}: API keys must be stored in environment variables and not logged.
+\item \textbf{Privacy}: Raw images are not stored by default; image hashes are persisted.
+\item \textbf{Usability}: The interface must show image preview, chat messages, and inline action buttons.
+\item \textbf{Auditability}: Every model output, action, and incident must be stored for review.
+\end{itemize}
+
+\subsection{State Diagram}
+The system state changes from image selection to analysis, output generation, action rendering, and optional incident creation.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[
+state/.style={rectangle, draw, rounded corners, minimum width=34mm, minimum height=9mm, align=center},
+flow/.style={->, thick, shorten >=2pt, shorten <=2pt}
+]
+\node[state] (idle) at (0,0) {Idle};
+\node[state] (selected) at (4.4,0) {Image Selected};
+\node[state] (processing) at (8.8,0) {Processing};
+\node[state] (info) at (6.6,-2.0) {Info Actions};
+\node[state] (report) at (11.0,-2.0) {Report Actions};
+\node[state] (incident) at (11.0,-3.9) {Incident Logged};
+\draw[flow] (idle) -- node[above]{select image} (selected);
+\draw[flow] (selected) -- node[above]{submit} (processing);
+\draw[flow] (processing) -- node[above, sloped]{low / uncertain} (info);
+\draw[flow] (processing) -- node[above, sloped]{high} (report);
+\draw[flow] (report) -- node[right]{confirm} (incident);
+\draw[flow] (info.south) .. controls (3.0,-3.6) and (-1.0,-2.0) .. node[left]{new image} (idle.south);
+\draw[flow] (incident.east) .. controls (13.2,-2.0) and (12.2,0.9) .. node[right]{new image} (processing.east);
+\end{tikzpicture}
+}
+\caption{State transition diagram}
+\label{fig:state}
+\end{figure}
+
+\subsection{Design Constraints}
+The system must not perform automatic external authority dispatch. WhatsApp notification is optional, environment-gated, and requires explicit user confirmation. The model must return strict JSON where possible, and fallback behavior must be conservative when confidence is low or output is invalid.
+
+\subsection{Software Interface Description}
+The backend exposes REST APIs for analysis, learn-more, report, and health check. The frontend communicates with these APIs using HTTP requests. Gemini Vision is accessed through the Google Generative Language API. Wikipedia is used for learn-more summaries, and Google Maps search links are generated for detected locations.

@@ -1,0 +1,79 @@
+\chapter{Literature Survey}
+
+\section{Overview of Existing Research}
+Image geolocation and visual place recognition have been studied using retrieval-based methods, deep convolutional networks, and recent vision-language models. Early systems used local visual descriptors and large geotagged image collections for nearest-neighbor matching \cite{lowe2004distinctive,vo2017revisiting}. Later approaches converted geolocation into classification over geographic regions or retrieval over learned place embeddings \cite{weyand2016planet,arandjelovic2016netvlad}. Recent multimodal foundation models combine image understanding with natural language reasoning, allowing richer scene interpretation and more flexible user interaction \cite{radford2021clip,li2023blip2,liu2024llava,team2024gemini}.
+
+Hazard-aware visual decision support is related to explainable artificial intelligence, structured model outputs, safety policy design, and audit logging. In practical systems, location prediction alone is not enough. The system must also indicate uncertainty, provide rationale, and avoid automatic escalation without human confirmation. Retrieval-grounded and reasoning-based geolocation studies motivate stronger evidence linking, but most existing work still focuses on benchmark geolocation instead of incident-response workflow \cite{zhou2024img2loc,li2025pixels,yerramilli2025geochain}.
+
+\section{Literature Survey}
+\begingroup
+\scriptsize
+\renewcommand{\arraystretch}{1.18}
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{|p{0.055\textwidth}|p{0.22\textwidth}|p{0.12\textwidth}|p{0.18\textwidth}|p{0.19\textwidth}|p{0.19\textwidth}|}
+\caption{Literature Survey}
+\label{tab:litsurvey}\\
+\hline
+\textbf{Sr. No} & \textbf{Paper Title} & \textbf{Journal / Conference} & \textbf{Authors \& Year} & \textbf{Methodology} & \textbf{Research Gap} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Sr. No} & \textbf{Paper Title} & \textbf{Journal / Conference} & \textbf{Authors \& Year} & \textbf{Methodology} & \textbf{Research Gap} \\
+\hline
+\endhead
+1 & PlaNet - Photo Geolocation with Convolutional Neural Networks & ECCV & Weyand, Kostrikov and Philbin, 2016 & CNN-based geolocation classification over geographic cells. & Strong geolocation focus, but limited explainability and no hazard-aware actions. \\
+\hline
+2 & Revisiting IM2GPS in the Deep Learning Era & ICCV & Vo, Jacobs and Hays, 2017 & Retrieval and deep feature based geolocation. & Depends on visual similarity datasets and does not provide decision-support workflow. \\
+\hline
+3 & Learning Transferable Visual Models From Natural Language Supervision & ICML & Radford et al., 2021 & Contrastive image-text pretraining for transferable visual representation. & Powerful visual-language alignment, but not directly designed for safety escalation. \\
+\hline
+4 & PIGEON: Predicting Image Geolocations & CVPR & Haas, Skreta, Alberti and Finn, 2024 & Multimodal geolocation using foundation model reasoning. & Geolocation performance is emphasized more than operational user actions. \\
+\hline
+5 & Img2Loc: Revisiting Image Geolocalization using Multi-modality Foundation Models and Image-based Retrieval-Augmented Generation & SIGIR & Zhou et al., 2024 & Foundation model plus retrieval-augmented image geolocation. & Retrieval grounding is useful, but incident logging and hazard response are outside scope. \\
+\hline
+6 & LLMGeo: Benchmarking Large Language Models on Image Geolocation In-the-wild & arXiv & Wang et al., 2024 & Benchmarking multimodal language models for geolocation. & Benchmarks model ability, but does not implement a complete safety-aware application. \\
+\hline
+7 & Improving Image Geolocation with Multimodal Deep Learning & ICONIP & Sinski, Zychowski and Mandziuk, 2024 & Uses multimodal deep learning for image geolocation improvement. & Focuses on geolocation improvement, not user-confirmed hazard reporting. \\
+\hline
+8 & IM2City: Image Geo-localization via Multi-modal Learning & ACM SIGSPATIAL Workshop & Wu and Huang, 2022 & Combines image and auxiliary modality cues for city-scale localization. & City-level localization does not directly support safety triage actions. \\
+\hline
+9 & Tell Me Where You Are: Multimodal LLMs Meet Place Recognition & arXiv & Lyu et al., 2024 & Evaluates multimodal LLMs for place recognition and contextual location reasoning. & Does not include incident persistence or notification policy. \\
+\hline
+10 & BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models & ICML & Li et al., 2023 & Aligns frozen image encoders with large language models using lightweight querying. & General vision-language method without domain-specific hazard action mapping. \\
+\hline
+11 & VLM-Guided Visual Place Recognition for Planet-Scale Geo-Localization & arXiv & Waheed et al., 2025 & Uses VLM guidance for large-scale visual place recognition. & Emphasizes retrieval quality, not controlled user-facing report workflow. \\
+\hline
+12 & From Pixels to Places: A Systematic Benchmark for Evaluating Image Geolocation Ability in Large Language Models & arXiv & Li et al., 2025 & Benchmarks LLM geolocation ability across image-to-place tasks. & Evaluation is benchmark-oriented and does not measure incident action outcomes. \\
+\hline
+13 & GeoChain: Multimodal Chain-of-Thought for Geographic Reasoning & EMNLP Findings & Yerramilli et al., 2025 & Decomposes geographic reasoning using multimodal chain-of-thought. & Reasoning improves explainability, but operational safety logging is outside scope. \\
+\hline
+14 & GeoGuess: Multimodal Reasoning based on Hierarchy of Visual Information in Street View & arXiv & Cheng et al., 2025 & Uses hierarchical visual information for street-view geolocation reasoning. & Street-view reasoning is not directly integrated with emergency response actions. \\
+\hline
+15 & Distinctive Image Features from Scale-Invariant Keypoints & IJCV & Lowe, 2004 & Introduces SIFT local features for robust image matching. & Classical matching lacks semantic risk understanding and natural language rationale. \\
+\hline
+16 & Visual Place Recognition with Repetitive Structures & IEEE TPAMI & Torii et al., 2015 & Improves place recognition under repeated urban structures and viewpoint changes. & Robust place matching does not classify hazard severity or confidence-based action paths. \\
+\hline
+17 & NetVLAD: CNN Architecture for Weakly Supervised Place Recognition & CVPR & Arandjelovic et al., 2016 & Learns compact place descriptors using weak supervision. & Retrieval descriptors alone do not provide explainable safety decisions. \\
+\hline
+18 & SuperGlue: Learning Feature Matching with Graph Neural Networks & CVPR & Sarlin et al., 2020 & Learns graph-based feature matching for reliable correspondences. & Useful for visual evidence but not a complete multimodal decision-support system. \\
+\hline
+19 & Visual Instruction Tuning & NeurIPS & Liu et al., 2024 & Trains instruction-following vision-language assistants. & General assistant behavior still requires project-specific validation and policy control. \\
+\hline
+20 & Gemini: A Family of Highly Capable Multimodal Models & arXiv & Gemini Team, 2024 & Describes a family of multimodal models for text, image, and reasoning tasks. & Model capability alone does not define auditable incident workflow or local system policy. \\
+\hline
+\end{longtable}
+\endgroup
+
+\section{Research Gap Analysis}
+The reviewed literature shows significant progress in image geolocation, visual place recognition, and vision-language reasoning. However, most approaches are evaluated using location accuracy, retrieval performance, or benchmark scores. In real-world use, a user may need both place information and risk-aware guidance.
+
+The main gaps identified are:
+\begin{itemize}
+\item Lack of combined geolocation and hazard-aware response in a single user-facing workflow.
+\item Limited use of structured output validation for model responses.
+\item Limited focus on deterministic action mapping from risk level and confidence.
+\item Lack of human-confirmed incident reporting and audit logging in geolocation prototypes.
+\item Limited confidence calibration and conservative fallback design for ambiguous images.
+\end{itemize}
+
+The proposed project addresses these gaps by combining multimodal image analysis, structured JSON output, deterministic policy rules, action buttons, and persistent logs for evaluation.

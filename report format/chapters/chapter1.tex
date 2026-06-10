@@ -1,0 +1,41 @@
+\chapter{Introduction}
+
+\section{Overview}
+The project titled \textbf{Image Geolocation and Hazard-Aware Response} is a chat-style multimodal system for image understanding, place identification, risk triage, and guided user action. The system allows a user to upload an image and receive an interpretable analysis of the scene. The response includes a short summary, possible location, detected entities, risk level, confidence score, explanation, and action buttons.
+
+The project is developed as a web application. The frontend is implemented using React, Vite, TypeScript, Tailwind CSS, and reusable UI components. The backend is implemented using Python Flask with Pydantic validation and SQLite persistence. The primary model provider is Gemini Vision, configured to return strict JSON output. The system converts this structured model output into deterministic user actions such as \textit{Learn More}, \textit{Open Map}, \textit{Safety Tips}, \textit{Why this result?}, and \textit{Report Suspicious Activity}.
+
+\section{Need and Relevance}
+Images are widely shared during travel, public events, accidents, disasters, and suspicious activities. A normal image may require contextual information about a place, while a risky image may require safe reporting guidance. Traditional image geolocation systems mainly focus on predicting a place, but practical users also need risk-aware interpretation and accountable action support.
+
+The proposed system is relevant because it joins image understanding with controlled decision support. It does not automatically notify authorities. Instead, it provides a human-in-the-loop flow where reporting is performed only after explicit user confirmation. This makes the system suitable for academic demonstration, public safety awareness, and image-based information retrieval.
+
+\section{Motivation}
+The motivation behind the project is to move beyond simple image classification or geolocation and build a usable multimodal assistant. Existing visual models can identify landmarks and describe scenes, but their responses are often free-form and difficult to audit. In safety-related scenarios, unsupported or overconfident claims can be harmful.
+
+Therefore, the project uses structured output, validation, deterministic policy rules, and local logging. This makes the system behavior easier to explain during evaluation and safer for demonstrations involving possible hazards.
+
+\section{Problem Statement}
+To design and implement a multimodal web-based system that analyzes user-uploaded images, identifies possible location and scene context, detects hazard signals, and provides risk-aware actions with auditable user-confirmed reporting.
+
+\section{Aim and Objectives}
+The aim of the project is to develop an interpretable multimodal image analysis system that combines geospatial reasoning with hazard-aware decision support.
+
+{\bfseries Objectives:}
+\begin{itemize}
+\item To develop a chat-style web interface for uploading and previewing images.
+\item To integrate a vision-capable multimodal model for structured image analysis.
+\item To validate and normalize model outputs into summary, risk level, confidence, entities, location, and rationale.
+\item To implement deterministic risk-to-action mapping for normal, uncertain, medium-risk, and high-risk scenes.
+\item To provide learn-more, map, safety, explanation, and user-confirmed report actions.
+\item To persist sessions, messages, model outputs, actions, and incidents for audit and evaluation.
+\item To evaluate the system using project test images and stored run logs.
+\end{itemize}
+
+\section{Project Scope and Limitations}
+The project scope includes image upload, multimodal inference, structured response validation, confidence normalization, hazard-aware action mapping, learn-more lookup, optional map links, incident logging, and optional environment-gated WhatsApp notification after explicit confirmation.
+
+The project does not include automatic emergency dispatch, legal identity verification, production-grade authentication, large-scale geotagged image retrieval, or forensic-level hazard verification. The current evaluation is based on a small project dataset and local run logs, so statistical conclusions are limited.
+
+\section{Organisation of the Report}
+Chapter 1 introduces the project, motivation, problem statement, objectives, scope, and limitations. Chapter 2 presents the literature survey and research gap analysis. Chapter 3 describes the software requirement specification, use cases, data model, and functional model. Chapter 4 presents the project plan, estimates, risk management, and team organization. Chapter 5 explains system design, architecture, mathematical model, data design, and results. Chapter 6 presents advantages, limitations, and applications. Chapter 7 describes validation and testing. Chapter 8 concludes the report and presents future scope.

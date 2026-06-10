@@ -1,0 +1,106 @@
+\begin{thebibliography}{10}
+
+\bibitem{lowe2004distinctive}
+D.~G. Lowe, ``Distinctive image features from scale-invariant keypoints,'' {\em
+  International Journal of Computer Vision}, vol.~60, no.~2, pp.~91--110, 2004.
+
+\bibitem{vo2017revisiting}
+N.~Vo, N.~Jacobs, and J.~Hays, ``Revisiting im2gps in the deep learning era,''
+  in {\em IEEE International Conference on Computer Vision}, pp.~2621--2630,
+  2017.
+
+\bibitem{weyand2016planet}
+T.~Weyand, I.~Kostrikov, and J.~Philbin, ``Planet - photo geolocation with
+  convolutional neural networks,'' in {\em European Conference on Computer
+  Vision}, pp.~37--55, 2016.
+
+\bibitem{arandjelovic2016netvlad}
+R.~Arandjelovic, P.~Gronat, A.~Torii, T.~Pajdla, and J.~Sivic, ``Netvlad: Cnn
+  architecture for weakly supervised place recognition,'' in {\em IEEE
+  Conference on Computer Vision and Pattern Recognition}, pp.~5297--5307, 2016.
+
+\bibitem{radford2021clip}
+A.~Radford {\em et~al.}, ``Learning transferable visual models from natural
+  language supervision,'' in {\em International Conference on Machine
+  Learning}, pp.~8748--8763, 2021.
+
+\bibitem{li2023blip2}
+J.~Li, D.~Li, S.~Savarese, and S.~Hoi, ``Blip-2: Bootstrapping language-image
+  pre-training with frozen image encoders and large language models,'' in {\em
+  International Conference on Machine Learning}, pp.~19730--19742, 2023.
+
+\bibitem{liu2024llava}
+H.~Liu, C.~Li, Q.~Wu, and Y.~J. Lee, ``Visual instruction tuning,'' in {\em
+  Advances in Neural Information Processing Systems}, vol.~36, 2024.
+
+\bibitem{team2024gemini}
+{Gemini Team}, ``Gemini: A family of highly capable multimodal models,'' 2024.
+\newblock arXiv:2312.11805.
+
+\bibitem{zhou2024img2loc}
+Z.~Zhou, J.~Zhang, Z.~Guan, M.~Hu, N.~Lao, L.~Mu, S.~Li, and G.~Mai, ``Img2loc:
+  Revisiting image geolocalization using multi-modality foundation models and
+  image-based retrieval-augmented generation,'' in {\em International ACM SIGIR
+  Conference}, pp.~2749--2754, 2024.
+
+\bibitem{li2025pixels}
+L.~Li, R.~Yu, Q.~Hu, B.~Li, M.~Deng, Y.~Zhou, and X.~Jia, ``From pixels to
+  places: A systematic benchmark for evaluating image geolocation ability in
+  large language models,'' 2025.
+\newblock arXiv:2508.01608.
+
+\bibitem{yerramilli2025geochain}
+S.~Yerramilli, N.~Pande, R.~Grover, and J.~S. Tamarapalli, ``Geochain:
+  Multimodal chain-of-thought for geographic reasoning,'' in {\em Findings of
+  the Association for Computational Linguistics: EMNLP}, pp.~23624--23639,
+  2025.
+
+\bibitem{bookPressman}
+R.~S. Pressman, {\em Software Engineering: A Practitioner's Approach}.
+\newblock New York, NY, USA: McGraw-Hill, 1992.
+
+\bibitem{sinski2024improving}
+B.~Sinski, A.~Zychowski, and J.~Mandziuk, ``Improving image geolocation with
+  multimodal deep learning,'' in {\em Neural Information Processing}, 2024.
+
+\bibitem{wu2022im2city}
+M.~Wu and Q.~Huang, ``Im2city: Image geo-localization via multi-modal
+  learning,'' in {\em ACM SIGSPATIAL International Workshop on AI for
+  Geographic Knowledge Discovery}, pp.~50--61, 2022.
+
+\bibitem{haas2024pigeon}
+L.~Haas, M.~Skreta, S.~Alberti, and C.~Finn, ``Pigeon: Predicting image
+  geolocations,'' in {\em IEEE/CVF Conference on Computer Vision and Pattern
+  Recognition}, pp.~12893--12902, 2024.
+
+\bibitem{wang2024llmgeo}
+Z.~Wang, D.~Xu, R.~M.~S. Khan, Y.~Lin, Z.~Fan, and X.~Zhu, ``Llmgeo:
+  Benchmarking large language models on image geolocation in-the-wild,'' 2024.
+\newblock arXiv:2405.20363.
+
+\bibitem{lyu2024tell}
+Z.~Lyu, J.~Zhang, M.~Lu, Y.~Li, and C.~Feng, ``Tell me where you are:
+  Multimodal llms meet place recognition,'' 2024.
+\newblock arXiv:2406.17520.
+
+\bibitem{waheed2025vlm}
+S.~Waheed, N.~M. An, M.~Milford, S.~D. Ramchurn, and S.~Ehsan, ``Vlm-guided
+  visual place recognition for planet-scale geo-localization,'' 2025.
+\newblock arXiv:2507.17455.
+
+\bibitem{cheng2025geoguess}
+F.~Cheng, J.~Wang, S.~Wang, Z.~Huang, and X.~Li, ``Geoguess: Multimodal
+  reasoning based on hierarchy of visual information in street view,'' 2025.
+\newblock arXiv:2506.16633.
+
+\bibitem{torii2015247}
+A.~Torii, J.~Sivic, M.~Okutomi, and T.~Pajdla, ``Visual place recognition with
+  repetitive structures,'' {\em IEEE Transactions on Pattern Analysis and
+  Machine Intelligence}, vol.~37, no.~11, pp.~2346--2359, 2015.
+
+\bibitem{sarlin2020superglue}
+P.-E. Sarlin, D.~DeTone, T.~Malisiewicz, and A.~Rabinovich, ``Superglue:
+  Learning feature matching with graph neural networks,'' in {\em IEEE/CVF
+  Conference on Computer Vision and Pattern Recognition}, pp.~4938--4947, 2020.
+
+\end{thebibliography}

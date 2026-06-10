@@ -1,0 +1,73 @@
+\begin{tikzpicture}[
+  font=\footnotesize,
+  node distance=10mm and 12mm,
+  box/.style={
+    rectangle,
+    draw=#1!70!black,
+    fill=#1!10,
+    rounded corners=2pt,
+    minimum width=34mm,
+    minimum height=12mm,
+    align=center,
+    line width=0.5pt
+  },
+  box/.default=blue,
+  flow/.style={
+    -{Stealth[length=2mm]},
+    line width=0.55pt
+  },
+  note/.style={
+    font=\scriptsize,
+    align=center
+  }
+]
+
+% --- Main pipeline ---------------------------------------------------
+
+\node[box=cyan] (ui)
+{1. Web UI\\image upload};
+
+\node[box=blue, right=of ui] (api)
+{2. Flask API\\validate request};
+
+\node[box=purple, right=of api] (model)
+{3. Gemini Vision\\strict JSON output};
+
+\node[box=orange, right=of model] (policy)
+{4. Policy Engine\\risk + actions};
+
+% --- Secondary nodes -------------------------------------------------
+
+\node[box=cyan, below=of policy] (response)
+{5. User Response\\summary, risk, actions};
+
+\node[box=green, below=of api] (db)
+{SQLite Store\\sessions, outputs, incidents};
+
+\node[box=red, below=of response] (notify)
+{Optional Notify\\only after confirmation};
+
+% --- Flows -----------------------------------------------------------
+
+\draw[flow] (ui) -- (api);
+\draw[flow] (api) -- (model);
+\draw[flow] (model) -- (policy);
+
+\draw[flow] (policy) -- (response);
+\draw[flow] (response) -- (notify);
+
+% Store API validation/request metadata
+\draw[flow] (api) -- (db);
+
+% Store outputs/incidents after response generation
+\draw[flow] (response.west) -- (db.east);
+
+% --- Annotations -----------------------------------------------------
+
+\node[note, above=5mm of model]
+{Multimodal inference and structured normalization};
+
+\node[note, below=7mm of db]
+{Model outputs, user actions, and confirmed incidents are retained for audit};
+
+\end{tikzpicture}

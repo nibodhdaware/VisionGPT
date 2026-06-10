@@ -1,0 +1,34 @@
+\chapter{Other Specifications}
+
+\section{Advantages of the System}
+\begin{itemize}
+\item \textbf{Multimodal understanding}: The system can analyze image content along with user context.
+\item \textbf{Structured output}: Model responses are converted into auditable fields instead of unstructured text only.
+\item \textbf{Risk-aware actions}: The response changes based on risk level and confidence.
+\item \textbf{Human-in-the-loop safety}: Incident reporting requires explicit confirmation from the user.
+\item \textbf{Audit trail}: Sessions, messages, model outputs, actions, and incident records are persisted.
+\item \textbf{Privacy-conscious storage}: Raw image storage is avoided by default and image hashes are stored.
+\item \textbf{Extensible design}: The architecture can support additional models, retrieval systems, and notification providers in future.
+\end{itemize}
+
+\section{Limitations of the System}
+\begin{itemize}
+\item The evaluation dataset is small and limited to available project logs.
+\item The system depends on the accuracy and availability of the multimodal model.
+\item Hazard detection is not equivalent to legal or forensic verification.
+\item Confidence scores are model-provided and require stronger calibration for production use.
+\item The current implementation does not use vector database retrieval for geotagged image grounding.
+\item Hazard demonstrations are mainly fire-related, while other emergency types need more testing.
+\item The system does not include production-grade authentication, role-based access control, or legal compliance workflows.
+\end{itemize}
+
+\section{Applications of the System}
+\begin{itemize}
+\item Tourist landmark explanation and learn-more assistance.
+\item Public safety awareness and guided incident reporting.
+\item Academic demonstration of multimodal LLM-based decision support.
+\item Image-based context retrieval for educational use.
+\item Smart city monitoring support with human verification.
+\item Disaster awareness prototypes for fire, flood, collapse, or other visible hazards.
+\item Digital verification workflows where image context and explanation are required.
+\end{itemize}
