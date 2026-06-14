@@ -298,6 +298,7 @@ export default function DatasetViewer({ apiBase }: { apiBase: string }) {
   const leafletRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
   const centerMarkerRef = useRef<any>(null);
+  const imageMarkersRef = useRef<any[]>([]);
 
   const fetchLocations = useCallback(async () => {
     try {
@@ -330,7 +331,7 @@ export default function DatasetViewer({ apiBase }: { apiBase: string }) {
   }, [autoRunning, fetchLocations, fetchImages, selectedLocId]);
 
   useEffect(() => {
-    if (selectedLocId) fetchImages(selectedLocId);
+    if (selectedLocId) { setImages([]); fetchImages(selectedLocId); }
     else setImages([]);
   }, [selectedLocId, fetchImages]);
 
@@ -453,6 +454,45 @@ export default function DatasetViewer({ apiBase }: { apiBase: string }) {
 
   const selectedLoc = locations.find(l => l.id === selectedLocId);
 
+  // Image markers on main map + zoom to location
+  useEffect(() => {
+    const loc = locations.find(l => l.id === selectedLocId);
+    const map = mapInstance.current;
+    if (!map) return;
+    // Let layout settle, then invalidate, fly to location, and place markers
+    const t = setTimeout(() => {
+      map.invalidateSize();
+      const L = leafletRef.current;
+      if (!L) return;
+      imageMarkersRef.current.forEach((m: any) => m.remove());
+      imageMarkersRef.current = [];
+      if (!loc) return;
+      map.flyTo([loc.latitude, loc.longitude], 15, { duration: 0.6 });
+      images.forEach((img) => {
+        if (img.error) return;
+        const url = img.image_url?.startsWith("http") ? img.image_url : (img.street_view_url || null);
+        if (!url) return;
+        const marker = L.marker([img.latitude, img.longitude], {
+          icon: L.divIcon({
+            className: "",
+            html: `<div style="width:18px;height:18px;background:#22c55e;border:3px solid white;border-radius:50%;box-shadow:0 0 10px rgba(34,197,94,0.7);cursor:pointer"></div>`,
+            iconSize: [18, 18], iconAnchor: [9, 9],
+          }),
+        }).addTo(map);
+        marker.bindTooltip(
+          `<div><img src="${url}" style="width:200px;height:133px;object-fit:cover;border-radius:8px;display:block" onerror="this.alt='img err'" /></div>`,
+          { direction: "top", sticky: true }
+        );
+        marker.on("click", () => {
+          const idx = images.findIndex(i => i.id === img.id);
+          if (idx !== -1) setSelectedImageIdx(idx);
+        });
+        imageMarkersRef.current.push(marker);
+      });
+    }, 150);
+    return () => clearTimeout(t);
+  }, [images, selectedLocId, locations]);
+
   return (
     <div className="flex h-full">
       {showAddModal && (
@@ -554,118 +594,126 @@ export default function DatasetViewer({ apiBase }: { apiBase: string }) {
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {selectedLoc ? (
-          <>
-            <div className="flex items-center justify-between border-b px-4 py-3" style={{ borderColor: "#1c1c1c" }}>
-              <div>
-                <h2 className="text-base font-bold tracking-tight" style={{ color: "#e8e6e3" }}>{selectedLoc.name}</h2>
-                <p className="text-xs font-mono" style={{ color: "#525252" }}>
-                  {selectedLoc.latitude.toFixed(5)}, {selectedLoc.longitude.toFixed(5)}
-                  <span className="ml-2">· {selectedLoc.collection_frequency}</span>
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <button onClick={() => handleCollect(selectedLoc.id)} disabled={collecting === selectedLoc.id}
-                  className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold transition-all active:scale-[0.97] disabled:opacity-40"
-                  style={{ background: "#ef4444", color: "#fff" }}>
-                  {collecting === selectedLoc.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Camera className="h-3.5 w-3.5" />}
-                  Collect
-                </button>
-                <button onClick={() => handleDelete(selectedLoc.id)}
-                  className="rounded-xl border px-3 py-2 text-xs font-medium transition-colors hover:bg-[#1c1c1c]"
-                  style={{ borderColor: "#262626", color: "#a3a3a3" }}>
-                  <Trash2 className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            </div>
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Map - always visible */}
+        <div className="relative flex-shrink-0" style={{ height: "40%" }}>
+          <div ref={mapRef} className="absolute inset-0" />
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-xl border px-4 py-2 text-xs backdrop-blur-md whitespace-nowrap"
+            style={{ borderColor: "#262626", background: "rgba(22,22,22,0.9)", color: "#a3a3a3" }}>
+            Click map to add a location · Click pins to view collected images
+          </div>
+        </div>
 
-            <div className="flex-1 overflow-y-auto p-4">
-              {images.length === 0 ? (
-                <div className="mt-16 text-center">
-                  <Camera className="mx-auto mb-3 h-10 w-10" style={{ color: "#262626" }} />
-                  <p className="text-sm" style={{ color: "#525252" }}>No images collected yet</p>
-                  <p className="mt-1 text-xs" style={{ color: "#525252" }}>Click "Collect" to fetch a Street View image</p>
+        {/* Bottom - location detail or empty state */}
+        <div className="flex-1 min-h-0 border-t" style={{ borderColor: "#1c1c1c" }}>
+          {selectedLoc ? (
+            <div className="h-full flex flex-col">
+              <div className="flex items-center justify-between border-b px-4 py-3" style={{ borderColor: "#1c1c1c" }}>
+                <div>
+                  <h2 className="text-base font-bold tracking-tight" style={{ color: "#e8e6e3" }}>{selectedLoc.name}</h2>
+                  <p className="text-xs font-mono" style={{ color: "#525252" }}>
+                    {selectedLoc.latitude.toFixed(5)}, {selectedLoc.longitude.toFixed(5)}
+                    <span className="ml-2">· {selectedLoc.collection_frequency}</span>
+                  </p>
                 </div>
-              ) : (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-                  {images.map((img, i) => (
-                    <button key={img.id} onClick={() => setSelectedImageIdx(i)}
-                      className="overflow-hidden rounded-xl border text-left w-full transition-all hover:border-red-500/30 active:scale-[0.98]"
-                      style={{ borderColor: "#1c1c1c", background: "#161616" }}>
-                      {img.error ? (
-                        <div className="flex h-40 items-center justify-center" style={{ background: "#0f0f0f" }}>
-                          <div className="text-center">
-                            <AlertTriangle className="mx-auto mb-1 h-6 w-6" style={{ color: "#ef4444" }} />
-                            <p className="text-xs" style={{ color: "#ef4444" }}>
-                              {img.error === "no_street_view_imagery" ? "No Street View imagery" : "Collection failed"}
-                            </p>
-                            <p className="text-[10px] font-mono mt-0.5" style={{ color: "#525252" }}>
-                              {img.error === "no_street_view_imagery" ? "Try a different location" : img.error}
-                            </p>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="relative h-40" style={{ background: "#0f0f0f" }}>
-                          {img.image_url ? (
-                            <img src={img.image_url?.startsWith("http") ? img.image_url : `${apiBase}${img.image_url}`} alt="Street view" className="h-full w-full object-cover" />
-                          ) : (
-                            <div className="flex h-full items-center justify-center">
-                              <p className="text-xs" style={{ color: "#525252" }}>No image</p>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => handleCollect(selectedLoc.id)} disabled={collecting === selectedLoc.id}
+                    className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold transition-all active:scale-[0.97] disabled:opacity-40"
+                    style={{ background: "#ef4444", color: "#fff" }}>
+                    {collecting === selectedLoc.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Camera className="h-3.5 w-3.5" />}
+                    Collect
+                  </button>
+                  <button onClick={() => handleDelete(selectedLoc.id)}
+                    className="rounded-xl border px-3 py-2 text-xs font-medium transition-colors hover:bg-[#1c1c1c]"
+                    style={{ borderColor: "#262626", color: "#a3a3a3" }}>
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4">
+                {images.length === 0 ? (
+                  <div className="mt-16 text-center">
+                    <Camera className="mx-auto mb-3 h-10 w-10" style={{ color: "#262626" }} />
+                    <p className="text-sm" style={{ color: "#525252" }}>No images collected yet</p>
+                    <p className="mt-1 text-xs" style={{ color: "#525252" }}>Click "Collect" to fetch a Street View image</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    {images.map((img, i) => (
+                      <button key={img.id} onClick={() => setSelectedImageIdx(i)}
+                        className="overflow-hidden rounded-xl border text-left w-full transition-all hover:border-red-500/30 active:scale-[0.98]"
+                        style={{ borderColor: "#1c1c1c", background: "#161616" }}>
+                        {img.error ? (
+                          <div className="flex h-40 items-center justify-center" style={{ background: "#0f0f0f" }}>
+                            <div className="text-center">
+                              <AlertTriangle className="mx-auto mb-1 h-6 w-6" style={{ color: "#ef4444" }} />
+                              <p className="text-xs" style={{ color: "#ef4444" }}>
+                                {img.error === "no_street_view_imagery" ? "No Street View imagery" : "Collection failed"}
+                              </p>
+                              <p className="text-[10px] font-mono mt-0.5" style={{ color: "#525252" }}>
+                                {img.error === "no_street_view_imagery" ? "Try a different location" : img.error}
+                              </p>
                             </div>
-                          )}
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2 pt-6">
-                            <p className="text-[10px] font-mono text-white/80">{formatDate(img.collected_at)}</p>
                           </div>
-                        </div>
-                      )}
-                      {img.analysis && !img.analysis.model_error && (
-                        <div className="p-3 space-y-2">
-                          {img.analysis.possible_location && (
-                            <p className="text-sm font-medium truncate" style={{ color: "#d1d5db" }}>
-                              {img.analysis.possible_location}
-                            </p>
-                          )}
-                          <div className="flex items-center gap-1.5">
-                            <ConfidenceBadge confidence={img.analysis.confidence} />
-                            {img.analysis.summary && (
-                              <span className="text-[10px] truncate" style={{ color: "#525252" }}>{img.analysis.summary}</span>
+                        ) : (
+                          <div className="relative h-40" style={{ background: "#0f0f0f" }}>
+                            {img.image_url ? (
+                              <img src={img.image_url?.startsWith("http") ? img.image_url : `${apiBase}${img.image_url}`} alt="Street view" className="h-full w-full object-cover" />
+                            ) : (
+                              <div className="flex h-full items-center justify-center">
+                                <p className="text-xs" style={{ color: "#525252" }}>No image</p>
+                              </div>
+                            )}
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2 pt-6">
+                              <p className="text-[10px] font-mono text-white/80">{formatDate(img.collected_at)}</p>
+                            </div>
+                          </div>
+                        )}
+                        {img.analysis && !img.analysis.model_error && (
+                          <div className="p-3 space-y-2">
+                            {img.analysis.possible_location && (
+                              <p className="text-sm font-medium truncate" style={{ color: "#d1d5db" }}>
+                                {img.analysis.possible_location}
+                              </p>
+                            )}
+                            <div className="flex items-center gap-1.5">
+                              <ConfidenceBadge confidence={img.analysis.confidence} />
+                              {img.analysis.summary && (
+                                <span className="text-[10px] truncate" style={{ color: "#525252" }}>{img.analysis.summary}</span>
+                              )}
+                            </div>
+                            {(img.analysis.country || img.analysis.state) && (
+                              <div className="flex items-center gap-1 text-[10px] font-mono" style={{ color: "#525252" }}>
+                                {[img.analysis.area, img.analysis.district, img.analysis.state, img.analysis.country]
+                                  .filter(Boolean).map((part, i) => (
+                                    <span key={i} className="inline-flex items-center gap-0.5">
+                                      {i > 0 && <span className="mx-0.5">›</span>}{part}
+                                    </span>
+                                  ))}
+                              </div>
                             )}
                           </div>
-                          {(img.analysis.country || img.analysis.state) && (
-                            <div className="flex items-center gap-1 text-[10px] font-mono" style={{ color: "#525252" }}>
-                              {[img.analysis.area, img.analysis.district, img.analysis.state, img.analysis.country]
-                                .filter(Boolean).map((part, i) => (
-                                  <span key={i} className="inline-flex items-center gap-0.5">
-                                    {i > 0 && <span className="mx-0.5">›</span>}{part}
-                                  </span>
-                                ))}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      {img.analysis?.model_error && (
-                        <div className="p-3">
-                          <p className="text-xs" style={{ color: "#f59e0b" }}>Analysis: {img.analysis.model_error}</p>
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </>
-        ) : (
-          <div className="flex-1 flex flex-col">
-            <div className="flex-1 relative">
-              <div ref={mapRef} className="absolute inset-0" />
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-xl border px-4 py-2 text-xs backdrop-blur-md whitespace-nowrap"
-                style={{ borderColor: "#262626", background: "rgba(22,22,22,0.9)", color: "#a3a3a3" }}>
-                Click map to add a location · Click pins to view collected images
+                        )}
+                        {img.analysis?.model_error && (
+                          <div className="p-3">
+                            <p className="text-xs" style={{ color: "#f59e0b" }}>Analysis: {img.analysis.model_error}</p>
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="h-full flex items-center justify-center">
+              <div className="text-center">
+                <MapPin className="mx-auto mb-3 h-10 w-10" style={{ color: "#262626" }} />
+                <p className="text-sm" style={{ color: "#525252" }}>Select a location to view collected images</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

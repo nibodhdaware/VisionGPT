@@ -124,3 +124,10 @@ body::before {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* Image tooltip for map markers */
+.image-tooltip {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
