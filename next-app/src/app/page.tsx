@@ -358,8 +358,8 @@ export default function Home() {
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl" style={{ background: "rgba(239,68,68,0.12)" }}>
               <ImageUp className="h-7 w-7" style={{ color: "#ef4444" }} />
             </div>
-            <p className="text-lg font-bold" style={{ color: "#e8e6e3" }}>Drop to analyze</p>
-            <p className="mt-1 text-sm" style={{ color: "#a3a3a3" }}>Photo will be scanned for hazards and location</p>
+            <p className="text-lg font-bold" style={{ color: "#e8e6e3" }}>Drop to geolocate</p>
+            <p className="mt-1 text-sm" style={{ color: "#a3a3a3" }}>Photo will be analyzed to identify the location</p>
           </div>
         </div>
       )}
@@ -439,8 +439,8 @@ export default function Home() {
                 <TriangleAlert className="h-4 w-4" style={{ color: "#ef4444" }} />
               </div>
               <div>
-                <h1 className="text-sm font-bold tracking-tight" style={{ color: "#e8e6e3" }}>Hazard Lens</h1>
-                <p className="text-[10px] uppercase tracking-[0.12em] font-mono" style={{ color: "#525252" }}>Incident Reporter</p>
+                <h1 className="text-sm font-bold tracking-tight" style={{ color: "#e8e6e3" }}>Image Geolocator</h1>
+                <p className="text-[10px] uppercase tracking-[0.12em] font-mono" style={{ color: "#525252" }}>Photo Geolocation &amp; Dataset</p>
               </div>
             </div>
           </div>
@@ -488,9 +488,9 @@ export default function Home() {
                   <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl" style={{ background: "rgba(239,68,68,0.1)" }}>
                     <Loader2 className="h-7 w-7 animate-spin" style={{ color: "#ef4444" }} />
                   </div>
-                  <h2 className="text-xl font-bold tracking-tight" style={{ color: "#e8e6e3" }}>Analyzing incident</h2>
+                  <h2 className="text-xl font-bold tracking-tight" style={{ color: "#e8e6e3" }}>Analyzing photo</h2>
                   <p className="mt-2 text-sm" style={{ color: "#a3a3a3" }}>
-                    AI is examining the photo for hazards and identifying the location.
+                    AI is examining the photo to identify the location and surroundings.
                   </p>
                   <div className="mt-8 space-y-3">
                     <SkeletonCard />
@@ -507,9 +507,9 @@ export default function Home() {
                   <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl" style={{ background: "rgba(239,68,68,0.1)" }}>
                     <TriangleAlert className="h-8 w-8" style={{ color: "#ef4444" }} />
                   </div>
-                  <h2 className="text-2xl font-bold tracking-tight" style={{ color: "#e8e6e3" }}>Hazard Lens</h2>
+                  <h2 className="text-2xl font-bold tracking-tight" style={{ color: "#e8e6e3" }}>Image Geolocator</h2>
                   <p className="mt-2 text-sm leading-relaxed" style={{ color: "#a3a3a3" }}>
-                    Upload a photo of an incident — flood, fire, accident — to identify the location and report it to authorities.
+                    Upload a photo to identify its location — get coordinates, address, and nearby area details.
                   </p>
 
                   <div className="mt-10 rounded-2xl border-2 border-dashed p-8 transition-all duration-300"
@@ -535,7 +535,7 @@ export default function Home() {
                             {pending ? (
                               <><Loader2 className="h-4 w-4 animate-spin" /> Analyzing...</>
                             ) : (
-                              <><ImageUp className="h-4 w-4" /> Analyze Incident</>
+                              <><ImageUp className="h-4 w-4" /> Geolocate</>
                             )}
                           </button>
                           <button onClick={(e) => { e.stopPropagation(); setFile(null); }}
@@ -551,7 +551,7 @@ export default function Home() {
                           <Plus className="h-6 w-6" style={{ color: "#525252" }} />
                         </div>
                         <div>
-                          <p className="text-base font-semibold" style={{ color: "#d1d5db" }}>Upload an incident photo</p>
+                          <p className="text-base font-semibold" style={{ color: "#d1d5db" }}>Upload a photo to geolocate</p>
                           <p className="mt-1 text-xs" style={{ color: "#525252" }}>Drag &amp; drop, paste, or click to browse</p>
                         </div>
                       </div>
@@ -766,7 +766,7 @@ export default function Home() {
                   className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-2.5 text-sm transition-all"
                   style={{ borderColor: "#262626", color: "#a3a3a3" }}>
                   <Plus className="h-4 w-4 transition-transform group-hover:scale-110" />
-                  <span>Upload new incident photo</span>
+                  <span>Upload a new photo to geolocate</span>
                   <span className="ml-1 hidden text-xs md:inline font-mono" style={{ color: "#525252" }}>or paste / drag &amp; drop</span>
                 </button>
               )}

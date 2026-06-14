@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Hazard Lens — Incident Reporter",
-  description: "AI-powered incident reporting and street view dataset collection",
+  title: "Image Geolocator",
+  description: "Geolocate photos and collect street view datasets",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
