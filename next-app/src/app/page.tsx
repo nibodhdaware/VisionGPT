@@ -1,17 +1,14 @@
+"use client";
+
 import { useEffect, useRef, useState, useCallback } from "react";
 import {
   AlertTriangle, MapPin, Plus, ShieldAlert, ChevronRight, Clock, Camera,
   Crosshair, Flame, Droplets, TriangleAlert, Send,
   ExternalLink, History, X, ImageUp, Loader2, Layers,
 } from "lucide-react";
-import DatasetViewer from "./DatasetViewer";
+import DatasetViewer from "@/components/DatasetViewer";
 
 type Risk = "low" | "medium" | "high" | "uncertain";
-type ActionItem = {
-  type: "report" | "learn_more" | "open_map" | "safety_tips";
-  label: string;
-  payload?: Record<string, string>;
-};
 
 type AssistantPayload = {
   reply: string;
@@ -29,7 +26,7 @@ type AssistantPayload = {
   area: string | null;
   exif_timestamp: string | null;
   exif_camera: string | null;
-  actions: ActionItem[];
+  actions: { type: string; label: string; payload?: Record<string, string> }[];
 };
 
 type AnalysisResult = {
@@ -46,7 +43,7 @@ type Toast = {
   message?: string;
 };
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "";
 
 function riskConfig(risk: Risk) {
   switch (risk) {
@@ -87,7 +84,7 @@ function HazardIcon({ risk }: { risk: Risk }) {
 
 function MiniMap({ lat, lng }: { lat: number; lng: number }) {
   const ref = useRef<HTMLDivElement>(null);
-  const instance = useRef<L.Map | null>(null);
+  const instance = useRef<any>(null);
 
   useEffect(() => {
     import("leaflet").then((L) => {
@@ -164,7 +161,7 @@ function ToastContainer({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id
   );
 }
 
-export default function App() {
+export default function Home() {
   const [sessionId] = useState(() => crypto.randomUUID());
   const [results, setResults] = useState<AnalysisResult[]>([]);
   const [file, setFile] = useState<File | null>(null);
@@ -177,6 +174,10 @@ export default function App() {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [dragCounter, setDragCounter] = useState(0);
   const [mode, setMode] = useState<"reporter" | "dataset">("reporter");
+
+  useEffect(() => {
+    if (window.location.search.includes("mode=dataset")) setMode("dataset");
+  }, []);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const resultsEndRef = useRef<HTMLDivElement>(null);
@@ -346,7 +347,6 @@ export default function App() {
     <div className="flex h-screen overflow-hidden" style={{ background: "#0f0f0f", color: "#e8e6e3" }}>
       <ToastContainer toasts={toasts} onDismiss={removeToast} />
 
-      {/* Drag overlay */}
       {isDragActive && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 backdrop-blur-sm">
           <div className="animate-slide-up rounded-2xl border-2 border-dashed px-14 py-12 text-center"

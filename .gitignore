@@ -4,3 +4,11 @@
 
 # backend
 ./backend/__pycache__/
+./backend/data/visiongpt.db
+./backend/data/dataset_images/
+
+# test images
+./test/
+
+# macOS
+**/.DS_Store
