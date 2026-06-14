@@ -483,7 +483,7 @@ export default function DatasetViewer({ apiBase }: { apiBase: string }) {
         marker.on("mouseover", () => {
           L.popup({ closeButton: false, className: "", offset: [0, -10] })
             .setLatLng([img.latitude, img.longitude])
-            .setContent(`<img src="${url}" style="width:480px;max-width:80vw;border-radius:8px;display:block" />`)
+            .setContent(`<img src="${url}" style="max-width:320px;width:100%;height:auto;border-radius:8px;display:block" />`)
             .openOn(map);
         });
         marker.on("mouseout", () => { map.closePopup(); });
