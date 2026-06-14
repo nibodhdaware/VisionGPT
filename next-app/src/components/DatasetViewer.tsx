@@ -479,10 +479,14 @@ export default function DatasetViewer({ apiBase }: { apiBase: string }) {
             iconSize: [18, 18], iconAnchor: [9, 9],
           }),
         }).addTo(map);
-        marker.bindTooltip(
-          `<div><img src="${url}" style="width:200px;height:133px;object-fit:cover;border-radius:8px;display:block" onerror="this.alt='img err'" /></div>`,
-          { direction: "top", sticky: true }
-        );
+        marker.setZIndexOffset(500);
+        marker.on("mouseover", () => {
+          L.popup({ closeButton: false, className: "", offset: [0, -10] })
+            .setLatLng([img.latitude, img.longitude])
+            .setContent(`<img src="${url}" style="width:200px;height:133px;object-fit:cover;border-radius:8px;display:block" />`)
+            .openOn(map);
+        });
+        marker.on("mouseout", () => { map.closePopup(); });
         marker.on("click", () => {
           const idx = images.findIndex(i => i.id === img.id);
           if (idx !== -1) setSelectedImageIdx(idx);
