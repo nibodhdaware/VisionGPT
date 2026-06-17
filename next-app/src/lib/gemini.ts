@@ -3,7 +3,9 @@ import os from "os";
 import path from "path";
 
 function setupGcpCredentials() {
-  const json = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+  let json = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+  const b64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64;
+  if (!json && b64) json = Buffer.from(b64, "base64").toString("utf-8");
   if (json && !process.env.GOOGLE_APPLICATION_CREDENTIALS) {
     const credsPath = path.join(os.tmpdir(), "gcp-credentials.json");
     if (!fs.existsSync(credsPath)) fs.writeFileSync(credsPath, json);
