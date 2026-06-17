@@ -4,6 +4,7 @@ import { sql } from "@/lib/db";
 import { generateContent, parseJson } from "@/lib/gemini";
 import { geocodeLocation } from "@/lib/geocode";
 import { hashId, now } from "@/lib/utils";
+import { uploadToR2, r2PublicUrl, isR2Configured } from "@/lib/r2";
 
 const HAZARD_PROMPT = `You are a safety and hazard assessment expert. Analyze the image thoroughly and return JSON only:
 
@@ -60,6 +61,7 @@ export async function POST(req: NextRequest) {
     let imageB64: string | null = null;
     let mimeType: string | null = null;
     let imageHash: string | null = null;
+    let imageUrl: string | null = null;
 
     if (image) {
       if (image.size > MAX_UPLOAD_MB * 1024 * 1024) {
@@ -69,6 +71,12 @@ export async function POST(req: NextRequest) {
       imageHash = crypto.createHash("sha256").update(buffer).digest("hex");
       imageB64 = buffer.toString("base64");
       mimeType = image.type || "image/jpeg";
+      if (isR2Configured()) {
+        const ext = mimeType.split("/").pop() || "jpg";
+        const key = `reports/${imageHash}.${ext}`;
+        await uploadToR2(key, buffer, mimeType);
+        imageUrl = r2PublicUrl(key);
+      }
     }
 
     const userMsgId = hashId(sessionId, now(), "user");
@@ -149,8 +157,8 @@ export async function POST(req: NextRequest) {
     }
 
     const aiMsgId = hashId(sessionId, now(), "ai");
-    await sql`INSERT INTO incidents (id, session_id, role, content, image_hash, hazard_detected, risk_level, confidence, possible_location, country, state, district, area, latitude, longitude, formatted_address, entities, recommended_actions, created_at)
-              VALUES (${aiMsgId}, ${sessionId}, 'assistant', ${JSON.stringify(result)}, ${imageHash},
+    await sql`INSERT INTO incidents (id, session_id, role, content, image_hash, image_url, hazard_detected, risk_level, confidence, possible_location, country, state, district, area, latitude, longitude, formatted_address, entities, recommended_actions, created_at)
+              VALUES (${aiMsgId}, ${sessionId}, 'assistant', ${JSON.stringify(result)}, ${imageHash}, ${imageUrl},
                       ${result.risk_level !== "low" ? 1 : 0}, ${result.risk_level}, ${result.confidence},
                       ${result.possible_location}, ${result.country}, ${result.state}, ${result.district},
                       ${result.area}, ${result.latitude}, ${result.longitude}, ${result.formatted_address},

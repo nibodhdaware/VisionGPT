@@ -64,6 +64,9 @@ async function ensureTables() {
       )
     `;
     await sql`
+      ALTER TABLE incidents ADD COLUMN IF NOT EXISTS image_url TEXT
+    `;
+    await sql`
       CREATE INDEX IF NOT EXISTS idx_incidents_session ON incidents(session_id, created_at)
     `;
     await sql`

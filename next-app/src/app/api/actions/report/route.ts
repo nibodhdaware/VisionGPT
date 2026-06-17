@@ -5,6 +5,23 @@ import twilio from "twilio";
 
 const RATE_LIMIT_SEC = 60;
 
+function mapsLink(lat: number | null, lng: number | null): string {
+  if (lat != null && lng != null) {
+    return `https://www.google.com/maps?q=${lat},${lng}`;
+  }
+  return "";
+}
+
+function formatAddress(analysis: any): string {
+  const parts = [
+    analysis.formatted_address,
+    analysis.possible_location,
+    [analysis.area, analysis.district].filter(Boolean).join(", "),
+    [analysis.state, analysis.country].filter(Boolean).join(", "),
+  ].filter(Boolean);
+  return [...new Set(parts)].join(" | ");
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -23,7 +40,8 @@ export async function POST(req: NextRequest) {
     }
 
     const rows = await sql`
-      SELECT content FROM incidents
+      SELECT content, image_url, latitude, longitude, formatted_address, possible_location, country, state, district, area
+      FROM incidents
       WHERE session_id = ${session_id} AND role = 'assistant'
       ORDER BY created_at DESC LIMIT 1
     `;
@@ -31,12 +49,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "no_analysis" }, { status: 400 });
     }
 
+    const row = rows[0];
     let analysis: any;
     try {
-      analysis = JSON.parse(rows[0].content);
+      analysis = JSON.parse(row.content);
     } catch {
       return NextResponse.json({ error: "invalid_analysis" }, { status: 400 });
     }
+
+    const lat = analysis.latitude ?? row.latitude;
+    const lng = analysis.longitude ?? row.longitude;
+    const addr = formatAddress({ ...analysis, formatted_address: row.formatted_address || analysis.formatted_address });
+    const mapUrl = mapsLink(lat, lng);
 
     const incidentId = hashId(session_id, now(), "report");
 
@@ -48,17 +72,42 @@ export async function POST(req: NextRequest) {
     const authToken = process.env.TWILIO_AUTH_TOKEN;
     const twilioFrom = process.env.TWILIO_WHATSAPP_FROM;
     const authorityPhone = process.env.AUTHORITY_WHATSAPP_TO;
+    const imageUrl = row.image_url || analysis.image_url;
 
     if (notifyWhatsapp && enabled && accountSid && authToken && twilioFrom && authorityPhone) {
       try {
         const client = twilio(accountSid, authToken);
-        const msg = `🚨 *Hazard Report* 🚨\n\n*Summary:* ${analysis.summary || "N/A"}\n*Risk Level:* ${analysis.risk_level || "N/A"}\n*Location:* ${analysis.possible_location || "Unknown"}\n*Confidence:* ${((analysis.confidence || 0) * 100).toFixed(0)}%\n\nReported via Hazard Lens.`;
 
-        await client.messages.create({
+        const msg = [
+          "🚨 *HAZARD REPORT — ACTION REQUIRED* 🚨",
+          "",
+          `*${analysis.summary || "Incident reported"}*`,
+          "",
+          `📍 *Location:* ${addr || analysis.possible_location || "Unknown"}`,
+          lat != null && lng != null ? `🗺 *Maps:* ${mapUrl}` : null,
+          "",
+          `⚠️ *Risk Level:* ${(analysis.risk_level || "uncertain").toUpperCase()}`,
+          `📊 *Confidence:* ${((analysis.confidence || 0) * 100).toFixed(0)}%`,
+          analysis.entities?.length ? `🏷 *Tags:* ${analysis.entities.slice(0, 5).join(", ")}` : null,
+          "",
+          analysis.rationale ? `*Details:* ${analysis.rationale}` : null,
+          "",
+          "🆘 Please dispatch nearest response team.",
+          "",
+          "_Reported via Hazard Lens_",
+        ].filter(Boolean).join("\n");
+
+        const msgParams: any = {
           from: `whatsapp:${twilioFrom}`,
           to: `whatsapp:${authorityPhone}`,
           body: msg,
-        });
+        };
+
+        if (imageUrl) {
+          msgParams.mediaUrl = [imageUrl];
+        }
+
+        await client.messages.create(msgParams);
 
         whatsappSent = true;
         whatsappReason = "sent";
@@ -70,7 +119,7 @@ export async function POST(req: NextRequest) {
 
     await sql`INSERT INTO incidents (id, session_id, role, content, whatsapp_attempted, whatsapp_sent, whatsapp_reason, created_at)
               VALUES (${incidentId}, ${session_id}, 'report',
-                      ${JSON.stringify({ status: "reported", analysis_id: rows[0].id, whatsapp: whatsappSent })},
+                      ${JSON.stringify({ status: "reported", analysis_id: row.id, whatsapp: whatsappSent })},
                       ${enabled ? 1 : 0}, ${whatsappSent ? 1 : 0}, ${whatsappReason}, ${now()})`;
 
     return NextResponse.json({
