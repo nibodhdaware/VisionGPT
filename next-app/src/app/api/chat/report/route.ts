@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import { hashId, now } from "@/lib/utils";
+import twilio from "twilio";
 
 const RATE_LIMIT_SEC = 60;
 
@@ -45,34 +46,24 @@ export async function POST(req: NextRequest) {
     let whatsappSent = false;
     let whatsappReason = "not_requested";
     const enabled = process.env.ENABLE_WHATSAPP_NOTIFY === "true";
-    const whapiToken = process.env.WHAPI_TOKEN;
-    const whapiBaseUrl = process.env.WHAPI_BASE_URL || "https://gate.whapi.cloud";
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+    const twilioFrom = process.env.TWILIO_WHATSAPP_FROM;
     const authorityPhone = process.env.AUTHORITY_WHATSAPP_TO;
 
-    if (enabled && whapiToken && authorityPhone) {
+    if (enabled && accountSid && authToken && twilioFrom && authorityPhone) {
       try {
+        const client = twilio(accountSid, authToken);
         const msg = `🚨 *Hazard Report* 🚨\n\n*Summary:* ${analysis.summary || "N/A"}\n*Risk Level:* ${analysis.risk_level || "N/A"}\n*Location:* ${analysis.possible_location || "Unknown"}\n*Confidence:* ${((analysis.confidence || 0) * 100).toFixed(0)}%\n\nReported via Hazard Lens.`;
 
-        const resp = await fetch(`${whapiBaseUrl}/messages/text`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${whapiToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            to: authorityPhone,
-            body: msg,
-            typing_time: 3,
-          }),
+        await client.messages.create({
+          from: `whatsapp:${twilioFrom}`,
+          to: `whatsapp:${authorityPhone}`,
+          body: msg,
         });
 
-        if (resp.ok) {
-          whatsappSent = true;
-          whatsappReason = "sent";
-        } else {
-          whatsappSent = false;
-          whatsappReason = `http_${resp.status}`;
-        }
+        whatsappSent = true;
+        whatsappReason = "sent";
       } catch (err: any) {
         whatsappSent = false;
         whatsappReason = `error_${(err?.message || "unknown").slice(0, 50)}`;
