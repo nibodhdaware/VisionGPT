@@ -43,7 +43,10 @@ export async function deleteFromR2(key: string) {
   await r2.send(new DeleteObjectCommand({ Bucket: BUCKET, Key: key }));
 }
 
+const PUBLIC_URL = process.env.R2_PUBLIC_URL;
+
 export function r2PublicUrl(key: string) {
+  if (PUBLIC_URL) return `${PUBLIC_URL}/${key}`;
   if (ENDPOINT && BUCKET) return `https://${BUCKET}.${new URL(ENDPOINT).hostname}/${key}`;
   return null;
 }
