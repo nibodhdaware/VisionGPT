@@ -79,32 +79,21 @@ export async function POST(req: NextRequest) {
       try {
         const client = twilio(accountSid, authToken);
 
-        const msg = [
-          "🚨 *HAZARD REPORT — ACTION REQUIRED* 🚨",
+        const lines = [
+          "🚨 *HAZARD REPORT* 🚨",
           "",
-          `*${analysis.summary || "Incident reported"}*`,
-          "",
-          `📍 *Location:* ${addr || analysis.possible_location || "Unknown"}`,
-          lat != null && lng != null ? `🗺 *Maps:* ${mapUrl}` : null,
-          "",
-          `⚠️ *Risk Level:* ${(analysis.risk_level || "uncertain").toUpperCase()}`,
-          `📊 *Confidence:* ${((analysis.confidence || 0) * 100).toFixed(0)}%`,
-          analysis.entities?.length ? `🏷 *Tags:* ${analysis.entities.slice(0, 5).join(", ")}` : null,
-          "",
-          analysis.rationale ? `*Details:* ${analysis.rationale}` : null,
-          "",
-          "🆘 Please dispatch nearest response team.",
-          "",
-          "_Reported via Hazard Lens_",
+          `${analysis.summary || "Incident reported"}`,
+          `📍 ${addr || analysis.possible_location || "Unknown"}`,
+          lat != null && lng != null ? `🗺 ${mapUrl}` : null,
+          `⚠️ ${(analysis.risk_level || "uncertain").toUpperCase()} · ${((analysis.confidence || 0) * 100).toFixed(0)}% confidence`,
+          absoluteImageUrl ? `📷 ${absoluteImageUrl}` : null,
         ].filter(Boolean).join("\n");
 
-        const msgParams: any = {
+        await client.messages.create({
           from: `whatsapp:${twilioFrom}`,
           to: `whatsapp:${authorityPhone}`,
-          body: msg,
-        };
-        if (absoluteImageUrl) msgParams.mediaUrl = [absoluteImageUrl];
-        await client.messages.create(msgParams);
+          body: lines,
+        });
 
         whatsappSent = true;
         whatsappReason = "sent";
