@@ -4,7 +4,7 @@ import { sql } from "@/lib/db";
 import { generateContent, parseJson } from "@/lib/gemini";
 import { geocodeLocation } from "@/lib/geocode";
 import { hashId, now } from "@/lib/utils";
-import { uploadToR2, r2PublicUrl, isR2Configured } from "@/lib/r2";
+import { uploadToR2, isR2Configured } from "@/lib/r2";
 
 const HAZARD_PROMPT = `You are a safety and hazard assessment expert. Analyze the image thoroughly and return JSON only:
 
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
         const ext = mimeType.split("/").pop() || "jpg";
         const key = `reports/${imageHash}.${ext}`;
         await uploadToR2(key, buffer, mimeType);
-        imageUrl = r2PublicUrl(key);
+        imageUrl = `/api/image/${key}`;
       }
     }
 

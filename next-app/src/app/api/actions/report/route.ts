@@ -73,6 +73,7 @@ export async function POST(req: NextRequest) {
     const twilioFrom = process.env.TWILIO_WHATSAPP_FROM;
     const authorityPhone = process.env.AUTHORITY_WHATSAPP_TO;
     const imageUrl = row.image_url || analysis.image_url;
+    const absoluteImageUrl = imageUrl?.startsWith("http") ? imageUrl : `${req.nextUrl.origin}${imageUrl}`;
 
     if (notifyWhatsapp && enabled && accountSid && authToken && twilioFrom && authorityPhone) {
       try {
@@ -102,7 +103,7 @@ export async function POST(req: NextRequest) {
           to: `whatsapp:${authorityPhone}`,
           body: msg,
         };
-        if (imageUrl) msgParams.mediaUrl = [imageUrl];
+        if (absoluteImageUrl) msgParams.mediaUrl = [absoluteImageUrl];
         await client.messages.create(msgParams);
 
         whatsappSent = true;
