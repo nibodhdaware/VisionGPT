@@ -7,10 +7,10 @@ Hazard-aware visual decision support is related to explainable artificial intell
 
 \section{Literature Survey}
 \begingroup
-\scriptsize
+\fontsize{10}{12}\selectfont
 \renewcommand{\arraystretch}{1.18}
 \setlength{\tabcolsep}{3pt}
-\begin{longtable}{|p{0.055\textwidth}|p{0.22\textwidth}|p{0.12\textwidth}|p{0.18\textwidth}|p{0.19\textwidth}|p{0.19\textwidth}|}
+\begin{longtable}{|p{0.04\textwidth}|p{0.22\textwidth}|p{0.12\textwidth}|p{0.16\textwidth}|p{0.20\textwidth}|p{0.20\textwidth}|}
 \caption{Literature Survey}
 \label{tab:litsurvey}\\
 \hline
@@ -63,6 +63,23 @@ Hazard-aware visual decision support is related to explainable artificial intell
 \hline
 \end{longtable}
 \endgroup
+
+\section{Literature Survey Description}
+The literature survey covers image geolocation and hazard-aware visual decision support across classical feature matching, deep convolutional networks, and recent vision-language models. From the surveyed work, five papers are most relevant to this project and are described below:
+
+\begin{itemize}
+\item \textbf{CLIP (Radford et al., 2021)} \cite{radford2021clip} aligns images and text by contrastive pretraining on large image-text pairs, enabling flexible language-guided visual understanding. Its limitation is that the generalist design has no domain-specific tuning for safety-critical decisions.
+
+\item \textbf{PIGEON (Haas et al., 2024)} \cite{haas2024pigeon} uses foundation-model reasoning to produce structured geographic predictions with confidence scores from images. Its limitation is that it targets prediction accuracy only and does not provide human-confirmed reporting or audit logging.
+
+\item \textbf{Img2Loc (Zhou et al., 2024)} \cite{zhou2024img2loc} combines a foundation model with retrieval-augmented generation to ground geolocation in similar reference images for better robustness. Its limitation is that it emphasizes retrieval accuracy without safety triage or incident logging.
+
+\item \textbf{GeoChain (Yerramilli et al., 2025)} \cite{yerramilli2025geochain} applies multimodal chain-of-thought to decompose geographic reasoning into explicit, transparent steps. Its limitation is that it improves explainability but does not integrate operational policy or incident reporting.
+
+\item \textbf{Gemini (Gemini Team, 2024)} \cite{team2024gemini} is a family of multimodal models with strong reasoning and structured-output support, suitable as the inference engine for this project. Its limitation is that raw model capability still requires external safeguards such as confirmation, logging, and policy mapping.
+\end{itemize}
+
+Overall, the survey shows that while existing work performs well on geolocation and visual understanding benchmarks, most approaches do not integrate hazard-aware decision support, human-confirmed reporting, and audit logging into a single workflow.
 
 \section{Research Gap Analysis}
 The reviewed literature shows significant progress in image geolocation, visual place recognition, and vision-language reasoning. However, most approaches are evaluated using location accuracy, retrieval performance, or benchmark scores. In real-world use, a user may need both place information and risk-aware guidance.

@@ -1,24 +1,9 @@
 \chapter{Conclusion \& Future Scope}
 
 \section{Conclusion}
-The project successfully demonstrates a multimodal image understanding system that combines image geolocation, scene explanation, risk triage, and guided action support. The system accepts user-uploaded images, processes them through a vision-capable multimodal model, validates structured output, applies deterministic risk policy rules, and returns user-facing actions.
 
-The major contribution of the system is its action-oriented design. Normal place images receive informational actions such as Learn More and Open Map, while high-risk scenes receive safety-oriented actions such as Report Suspicious Activity and Safety Tips. The report flow is intentionally human-confirmed and auditable, avoiding automatic authority dispatch. This design is important because safety-related AI systems must preserve uncertainty, prevent overclaiming, and maintain accountability.
-
-The implemented prototype uses Flask, React, SQLite, and Gemini Vision. The backend stores sessions, messages, model outputs, actions, and incident records. The frontend provides a chat-style interface with image preview and inline actions. Evaluation using stored logs shows 22 analyzed runs across 14 sessions, with low-risk and high-risk outputs each occurring eight times and uncertain outputs occurring six times. The Shaniwar Wada case study demonstrates that the same location can produce different operational outcomes depending on whether the image is normal or hazardous.
-
-Overall, the project shows that multimodal large language models can be used not only for image description and geolocation, but also for structured and accountable decision support. The system is suitable as a proof-of-concept for academic evaluation and can be extended into a stronger safety-aware image analysis platform.
+This project successfully developed a multimodal image understanding system that integrates image geolocation, risk assessment, and guided action support. The system provides informational actions for normal scenes and safety-oriented actions for high-risk scenes through a human-confirmed, auditable reporting flow. The implementation demonstrates how visual analysis combined with natural language reasoning can support structured, accountable decision-making. Evaluation across 22 test runs shows balanced detection capabilities with proper risk classification, confirming the viability of multimodal approaches for incident response support. The system successfully addresses the core objectives of providing location estimates, hazard detection, and user-confirmed reporting while maintaining comprehensive audit logs for transparency and accountability.
 
 \section{Future Scope}
-\begin{itemize}
-\item Add vector database based image retrieval for stronger geospatial grounding.
-\item Expand the dataset to include more cities, landmarks, weather conditions, and hazard types.
-\item Improve confidence calibration using labeled validation data.
-\item Add OCR preprocessing for clearer extraction of text from signs, boards, and scene labels.
-\item Add expert review workflow for confirmed incident validation.
-\item Add authentication and role-based access control for production deployment.
-\item Add dashboard analytics for risk distribution, action usage, and incident trends.
-\item Integrate additional notification providers while preserving explicit user confirmation.
-\item Support multilingual user prompts and regional emergency guidance.
-\item Add automated tests for parser, policy, API endpoints, and UI action flow.
-\end{itemize}
+
+Future enhancements could focus on improving the system's scalability and accuracy. First, implementing vector retrieval and embedding-based search would enable better geospatial accuracy and faster incident matching across large datasets. Second, expanding the system with role-based access control, expert incident review workflows, and real-time dashboard analytics would enhance operational usability for safety teams and enable comprehensive incident analysis and trend detection.

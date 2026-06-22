@@ -55,19 +55,6 @@ S.~Yerramilli, N.~Pande, R.~Grover, and J.~S. Tamarapalli, ``Geochain:
   the Association for Computational Linguistics: EMNLP}, pp.~23624--23639,
   2025.
 
-\bibitem{bookPressman}
-R.~S. Pressman, {\em Software Engineering: A Practitioner's Approach}.
-\newblock New York, NY, USA: McGraw-Hill, 1992.
-
-\bibitem{sinski2024improving}
-B.~Sinski, A.~Zychowski, and J.~Mandziuk, ``Improving image geolocation with
-  multimodal deep learning,'' in {\em Neural Information Processing}, 2024.
-
-\bibitem{wu2022im2city}
-M.~Wu and Q.~Huang, ``Im2city: Image geo-localization via multi-modal
-  learning,'' in {\em ACM SIGSPATIAL International Workshop on AI for
-  Geographic Knowledge Discovery}, pp.~50--61, 2022.
-
 \bibitem{haas2024pigeon}
 L.~Haas, M.~Skreta, S.~Alberti, and C.~Finn, ``Pigeon: Predicting image
   geolocations,'' in {\em IEEE/CVF Conference on Computer Vision and Pattern
@@ -77,6 +64,15 @@ L.~Haas, M.~Skreta, S.~Alberti, and C.~Finn, ``Pigeon: Predicting image
 Z.~Wang, D.~Xu, R.~M.~S. Khan, Y.~Lin, Z.~Fan, and X.~Zhu, ``Llmgeo:
   Benchmarking large language models on image geolocation in-the-wild,'' 2024.
 \newblock arXiv:2405.20363.
+
+\bibitem{sinski2024improving}
+B.~Sinski, A.~Zychowski, and J.~Mandziuk, ``Improving image geolocation with
+  multimodal deep learning,'' in {\em Neural Information Processing}, 2024.
+
+\bibitem{wu2022im2city}
+M.~Wu and Q.~Huang, ``Im2city: Image geo-localization via multi-modal
+  learning,'' in {\em ACM SIGSPATIAL International Workshop on AI for
+  Geographic Knowledge Discovery}, pp.~50--61, 2022.
 
 \bibitem{lyu2024tell}
 Z.~Lyu, J.~Zhang, M.~Lu, Y.~Li, and C.~Feng, ``Tell me where you are:

@@ -21,11 +21,10 @@
 \RequirePackage{float}
 \RequirePackage[a4paper,bindingoffset=0.2in,left=1.5in,right=1in,top=1in,bottom=1.25in,footskip=.25in]{geometry}
 \RequirePackage{mathptmx}
-\RequirePackage{anyfontsize}
+%\RequirePackage{anyfontsize}
 \RequirePackage{setspace}
 \RequirePackage{fancyhdr}
 \RequirePackage{titlesec}
-\RequirePackage{lipsum}
 \RequirePackage{mfirstuc}
 %\RequirePackage{showframe}
 

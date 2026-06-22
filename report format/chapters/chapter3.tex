@@ -2,21 +2,16 @@
 
 \section{Introduction}
 \subsection{Purpose and Scope of Document}
-The Software Requirement Specification describes the functional and non-functional requirements of the Image Geolocation and Hazard-Aware Response system. It defines the users, use cases, data model, functional behavior, system constraints, and interfaces required for implementation and validation.
+Facilitating other Documentation: This SRS serves as a foundational reference for all future project documentation, including system design documents, test plans, user manuals, and project reports. It ensures consistency across development phases by providing a clear understanding of system requirements and expected behavior.
 
-The scope of the system includes:
-\begin{itemize}
-\item Image upload through a web interface.
-\item Vision-based scene analysis using a multimodal model.
-\item Structured JSON response validation and normalization.
-\item Risk-level classification into low, medium, high, or uncertain.
-\item Deterministic action rendering based on risk and confidence.
-\item Learn-more, map, safety tips, explanation, and report actions.
-\item Local persistence of sessions, messages, model outputs, actions, and incidents.
-\end{itemize}
+Product Validation: The SRS enables validation by establishing measurable criteria for evaluating the system's performance and verifying that the final implementation meets user requirements. It acts as a benchmark for acceptance testing to ensure the predicted geolocation results are accurate, reliable, and aligned with project objectives.
 
 \subsection{Characteristics of a Software Requirement Specification}
-An effective SRS for this project must be accurate, complete, testable, traceable, and prioritized. Accuracy is important because incorrect risk handling may mislead users. Completeness is required so that upload, analysis, action, and logging flows are all covered. Testability is required so that every major requirement can be verified through manual or automated testing.
+Accuracy: The SRS clearly defines the functional and non-functional requirements without ambiguity. Every requirement accurately reflects the intended system behavior, such as input image handling, machine learning-based geolocation prediction, and result interpretation. Accurate details ensure developers and stakeholders share a common understanding.
+
+Completeness: The SRS provides a complete description of all required system features, constraints, performance expectations, and interfaces. It includes functional requirements such as dataset processing, model training, and location prediction, as well as non-functional aspects like performance, security, usability, and scalability. No essential requirement is omitted.
+
+Prioritization of Requirements: The requirements in the SRS are organized based on importance and implementation priority. Critical functionalities such as image preprocessing and model prediction are placed at higher priority, followed by enhancements like user interface improvements, accuracy tuning, and dataset expansion. Prioritization ensures efficient planning and phased development.
 
 \subsection{Overview of Responsibilities of Developer}
 The development responsibilities include frontend design, backend API implementation, multimodal model integration, database schema design, validation logic, safety policy implementation, and testing. The developer must ensure that the system does not perform automatic authority dispatch and that all report actions are explicitly confirmed by the user.
@@ -30,7 +25,7 @@ The system is designed for users who want to understand an image, identify possi
 \caption{System Entities Description}
 \label{tab:entities}
 \def\arraystretch{1.5}
-\begin{tabularx}{\textwidth}{|c|c|X|}
+\begin{tabularx}{\textwidth}{|c|l|X|}
 \hline
 \textbf{Sr. No.} & \textbf{Actor} & \textbf{Description} \\ \hline
 1 & General User & Uploads an image and receives scene explanation, location estimate, risk level, and actions. \\ \hline
@@ -63,27 +58,7 @@ The use case view represents interaction between users and the multimodal assist
 
 \begin{figure}[H]
 \centering
-\resizebox{0.95\textwidth}{!}{%
-\begin{tikzpicture}[
-actor/.style={rectangle, draw, rounded corners, minimum width=22mm, minimum height=9mm, align=center},
-usecase/.style={ellipse, draw, minimum width=36mm, minimum height=9mm, align=center},
-line/.style={->, thick, shorten >=2pt, shorten <=2pt}
-]
-\node[actor] (user) at (0,0) {User};
-\node[actor] (reviewer) at (0,-2.2) {Reviewer};
-\node[usecase] (upload) at (4.4,1.3) {Upload Image};
-\node[usecase] (analyze) at (4.4,0.35) {Analyze Scene};
-\node[usecase] (learn) at (4.4,-0.6) {Learn More};
-\node[usecase] (report) at (4.4,-1.55) {Confirm Report};
-\node[usecase] (logs) at (4.4,-2.5) {Review Logs};
-\node[draw, rounded corners, fit=(upload)(analyze)(learn)(report)(logs), inner sep=6mm, label=above:{VisionGPT System}] (box) {};
-\draw[line] (user.east) -- (upload.west);
-\draw[line] (user.east) -- (analyze.west);
-\draw[line] (user.east) -- (learn.west);
-\draw[line] (user.east) -- (report.west);
-\draw[line] (reviewer.east) -- (logs.west);
-\end{tikzpicture}
-}
+\includegraphics[width=0.95\textwidth]{diagrams/use-case.png}
 \caption{Use case diagram}
 \label{fig:usecase}
 \end{figure}
@@ -104,20 +79,7 @@ The main database tables are:
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[
-entity/.style={rectangle, draw, rounded corners, minimum width=28mm, minimum height=10mm, align=center},
-rel/.style={->, thick}
-]
-\node[entity] (sessions) at (0,0) {sessions\\id, created\_at};
-\node[entity] (messages) at (5,0) {messages\\id, session\_id, role};
-\node[entity] (outputs) at (10,1.5) {model\_outputs\\risk, confidence, json};
-\node[entity] (actions) at (10,0) {actions\\type, payload};
-\node[entity] (incidents) at (10,-1.5) {incidents\\reason, confirmed};
-\draw[rel] (sessions) -- node[above]{1:N} (messages);
-\draw[rel] (messages) -- node[above, sloped]{1:N} (outputs);
-\draw[rel] (messages) -- node[above]{1:N} (actions);
-\draw[rel] (messages) -- node[below, sloped]{1:N} (incidents);
-\end{tikzpicture}
+\includegraphics[width=0.95\textwidth]{diagrams/er-diagram.jpeg}
 \caption{ER diagram}
 \label{fig:er}
 \end{figure}
@@ -129,23 +91,7 @@ The data flow starts when a user submits an image. The frontend sends a multipar
 \subsubsection{Level 0 Data Flow Diagram}
 \begin{figure}[H]
 \centering
-\resizebox{0.95\textwidth}{!}{%
-\begin{tikzpicture}[
-process/.style={rectangle, draw, rounded corners, minimum width=36mm, minimum height=12mm, align=center},
-external/.style={rectangle, draw, minimum width=28mm, minimum height=10mm, align=center},
-flow/.style={->, thick, shorten >=2pt, shorten <=2pt}
-]
-\node[external] (user) at (0,0) {User};
-\node[process] (system) at (4.8,0) {VisionGPT\\System};
-\node[external] (model) at (9.6,1.45) {Gemini\\Vision};
-\node[external] (db) at (9.6,-1.45) {SQLite\\Logs};
-\draw[flow] ([yshift=2mm]user.east) -- node[above]{image request} ([yshift=2mm]system.west);
-\draw[flow] ([yshift=-2mm]system.west) -- node[below]{response} ([yshift=-2mm]user.east);
-\draw[flow] (system.east) -- node[above, sloped]{prompt} (model.west);
-\draw[flow] (model.west) -- node[below, sloped]{JSON} (system.east);
-\draw[flow] (system.east) -- node[below, sloped]{audit records} (db.west);
-\end{tikzpicture}
-}
+\includegraphics[width=0.95\textwidth]{diagrams/dfd-lvl-0.png}
 \caption{DFD Level 0 diagram}
 \label{fig:dfd0}
 \end{figure}
@@ -153,16 +99,17 @@ flow/.style={->, thick, shorten >=2pt, shorten <=2pt}
 \subsubsection{Level 1 Data Flow Diagram}
 \begin{figure}[H]
 \centering
+\resizebox{0.92\textwidth}{!}{%
 \begin{tikzpicture}[
-process/.style={rectangle, draw, rounded corners, minimum width=28mm, minimum height=10mm, align=center},
-store/.style={cylinder, draw, shape border rotate=90, aspect=0.25, minimum height=13mm, minimum width=18mm, align=center},
-flow/.style={->, thick}
+process/.style={rectangle, draw, rounded corners, minimum width=32mm, minimum height=12mm, align=center, font=\small},
+store/.style={cylinder, draw, shape border rotate=90, aspect=0.25, minimum height=15mm, minimum width=20mm, align=center, font=\small},
+flow/.style={->, thick, shorten >=2pt, shorten <=2pt}
 ]
 \node[process] (upload) at (0,0) {1. Upload\\Image};
-\node[process] (infer) at (4,0) {2. Gemini\\Inference};
-\node[process] (policy) at (8,0) {3. Risk Policy\\and Actions};
-\node[process] (reply) at (12,0) {4. Response\\to User};
-\node[store] (db) at (8,-2.2) {SQLite\\DB};
+\node[process] (infer) at (4.4,0) {2. Gemini\\Inference};
+\node[process] (policy) at (8.8,0) {3. Risk Policy\\and Actions};
+\node[process] (reply) at (13.2,0) {4. Response\\to User};
+\node[store] (db) at (8.8,-2.6) {SQLite\\DB};
 \draw[flow] (upload) -- (infer);
 \draw[flow] (infer) -- (policy);
 \draw[flow] (policy) -- (reply);
@@ -170,6 +117,7 @@ flow/.style={->, thick}
 \draw[flow] (policy) -- (db);
 \draw[flow] (db) -- (reply);
 \end{tikzpicture}
+}
 \caption{DFD Level 1 diagram}
 \label{fig:dfd1}
 \end{figure}
@@ -183,26 +131,26 @@ The activity diagram represents the end-to-end workflow from image upload to act
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-activity/.style={rectangle, draw, rounded corners, minimum width=42mm, minimum height=8mm, align=center},
-decision/.style={diamond, draw, aspect=2, align=center, inner sep=1mm},
-flow/.style={->, thick}
+activity/.style={rectangle, draw, rounded corners, minimum width=46mm, minimum height=10mm, align=center, font=\small},
+decision/.style={diamond, draw, aspect=2, align=center, inner sep=2mm, font=\small},
+flow/.style={->, thick, shorten >=2pt, shorten <=2pt}
 ]
 \node[circle, fill=black, minimum size=4mm] (start) at (0,0) {};
-\node[activity] (upload) at (0,-1) {Upload image};
-\node[activity] (analyze) at (0,-2.1) {Analyze with Gemini Vision};
-\node[activity] (normalize) at (0,-3.2) {Validate and normalize JSON};
-\node[decision] (risk) at (0,-4.5) {Risk\\high?};
-\node[activity] (report) at (-3.3,-6) {Show report and safety actions};
-\node[activity] (learn) at (3.3,-6) {Show learn-more and map actions};
-\node[activity] (persist) at (0,-7.4) {Persist logs and actions};
-\node[circle, draw, thick, minimum size=5mm] (end) at (0,-8.5) {};
-\node[circle, fill=black, minimum size=3mm] at (0,-8.5) {};
+\node[activity] (upload) at (0,-1.2) {Upload image};
+\node[activity] (analyze) at (0,-2.5) {Analyze with Gemini Vision};
+\node[activity] (normalize) at (0,-3.8) {Validate and normalize JSON};
+\node[decision] (risk) at (0,-5.3) {Risk\\high?};
+\node[activity] (report) at (-3.6,-7) {Show report and\\safety actions};
+\node[activity] (learn) at (3.6,-7) {Show learn-more\\and map actions};
+\node[activity] (persist) at (0,-8.5) {Persist logs\\and actions};
+\node[circle, draw, thick, minimum size=5mm] (end) at (0,-9.8) {};
+\node[circle, fill=black, minimum size=3mm] at (0,-9.8) {};
 \draw[flow] (start) -- (upload);
 \draw[flow] (upload) -- (analyze);
 \draw[flow] (analyze) -- (normalize);
 \draw[flow] (normalize) -- (risk);
-\draw[flow] (risk) -- node[above, sloped]{yes} (report);
-\draw[flow] (risk) -- node[above, sloped]{no} (learn);
+\draw[flow] (risk) -- node[above, sloped, font=\footnotesize]{yes} (report);
+\draw[flow] (risk) -- node[above, sloped, font=\footnotesize]{no} (learn);
 \draw[flow] (report) |- (persist);
 \draw[flow] (learn) |- (persist);
 \draw[flow] (persist) -- (end);
@@ -226,26 +174,7 @@ The system state changes from image selection to analysis, output generation, ac
 
 \begin{figure}[H]
 \centering
-\resizebox{0.95\textwidth}{!}{%
-\begin{tikzpicture}[
-state/.style={rectangle, draw, rounded corners, minimum width=34mm, minimum height=9mm, align=center},
-flow/.style={->, thick, shorten >=2pt, shorten <=2pt}
-]
-\node[state] (idle) at (0,0) {Idle};
-\node[state] (selected) at (4.4,0) {Image Selected};
-\node[state] (processing) at (8.8,0) {Processing};
-\node[state] (info) at (6.6,-2.0) {Info Actions};
-\node[state] (report) at (11.0,-2.0) {Report Actions};
-\node[state] (incident) at (11.0,-3.9) {Incident Logged};
-\draw[flow] (idle) -- node[above]{select image} (selected);
-\draw[flow] (selected) -- node[above]{submit} (processing);
-\draw[flow] (processing) -- node[above, sloped]{low / uncertain} (info);
-\draw[flow] (processing) -- node[above, sloped]{high} (report);
-\draw[flow] (report) -- node[right]{confirm} (incident);
-\draw[flow] (info.south) .. controls (3.0,-3.6) and (-1.0,-2.0) .. node[left]{new image} (idle.south);
-\draw[flow] (incident.east) .. controls (13.2,-2.0) and (12.2,0.9) .. node[right]{new image} (processing.east);
-\end{tikzpicture}
-}
+\includegraphics[width=0.95\textwidth]{diagrams/state-transition.jpeg}
 \caption{State transition diagram}
 \label{fig:state}
 \end{figure}

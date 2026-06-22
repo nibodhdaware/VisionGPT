@@ -1,79 +1,80 @@
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Overview}{1}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Need and Relevance}{1}{section.1.2}%
-\contentsline {section}{\numberline {1.3}Motivation}{2}{section.1.3}%
-\contentsline {section}{\numberline {1.4}Problem Statement}{2}{section.1.4}%
-\contentsline {section}{\numberline {1.5}Aim and Objectives}{2}{section.1.5}%
-\contentsline {section}{\numberline {1.6}Project Scope and Limitations}{3}{section.1.6}%
-\contentsline {section}{\numberline {1.7}Organisation of the Report}{3}{section.1.7}%
-\contentsline {chapter}{\numberline {2}Literature Survey}{4}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Overview of Existing Research}{4}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Literature Survey}{4}{section.2.2}%
-\contentsline {section}{\numberline {2.3}Research Gap Analysis}{7}{section.2.3}%
-\contentsline {chapter}{\numberline {3}Software Requirement Specification}{8}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Introduction}{8}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}Purpose and Scope of Document}{8}{subsection.3.1.1}%
-\contentsline {subsection}{\numberline {3.1.2}Characteristics of a Software Requirement Specification}{9}{subsection.3.1.2}%
-\contentsline {subsection}{\numberline {3.1.3}Overview of Responsibilities of Developer}{9}{subsection.3.1.3}%
-\contentsline {section}{\numberline {3.2}Usage Scenario}{9}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}User Profiles}{10}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Use Cases}{11}{subsection.3.2.2}%
-\contentsline {subsection}{\numberline {3.2.3}Use Case View}{11}{subsection.3.2.3}%
-\contentsline {section}{\numberline {3.3}Data Model and Description}{12}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Data Description}{12}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}Data Objects and Relationships}{12}{subsection.3.3.2}%
-\contentsline {section}{\numberline {3.4}Functional Model and Description}{13}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Data Flow Diagram}{13}{subsection.3.4.1}%
-\contentsline {subsubsection}{\numberline {3.4.1.1}Level 0 Data Flow Diagram}{13}{subsubsection.3.4.1.1}%
-\contentsline {subsubsection}{\numberline {3.4.1.2}Level 1 Data Flow Diagram}{14}{subsubsection.3.4.1.2}%
-\contentsline {subsection}{\numberline {3.4.2}Description of Functions}{14}{subsection.3.4.2}%
-\contentsline {subsection}{\numberline {3.4.3}Activity Diagram}{14}{subsection.3.4.3}%
-\contentsline {subsection}{\numberline {3.4.4}Non Functional Requirements}{15}{subsection.3.4.4}%
-\contentsline {subsection}{\numberline {3.4.5}State Diagram}{15}{subsection.3.4.5}%
-\contentsline {subsection}{\numberline {3.4.6}Design Constraints}{15}{subsection.3.4.6}%
-\contentsline {subsection}{\numberline {3.4.7}Software Interface Description}{16}{subsection.3.4.7}%
-\contentsline {chapter}{\numberline {4}Project Plan}{17}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Project Estimates}{17}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Reconciled Estimates}{18}{subsection.4.1.1}%
-\contentsline {subsubsection}{\numberline {4.1.1.1}Cost Estimate}{18}{subsubsection.4.1.1.1}%
-\contentsline {subsubsection}{\numberline {4.1.1.2}Time Estimates}{18}{subsubsection.4.1.1.2}%
-\contentsline {subsection}{\numberline {4.1.2}Project Resources}{18}{subsection.4.1.2}%
-\contentsline {section}{\numberline {4.2}Risk Management w.r.t. NP Hard Analysis}{19}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Risk Identification}{19}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Risk Analysis}{19}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Overview of Risk Mitigation, Monitoring, Management}{20}{subsection.4.2.3}%
-\contentsline {section}{\numberline {4.3}Project Schedule}{20}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Project Task Set}{20}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Task Network}{20}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {4.3.3}Timeline Chart}{21}{subsection.4.3.3}%
-\contentsline {section}{\numberline {4.4}Team Organization}{21}{section.4.4}%
-\contentsline {subsection}{\numberline {4.4.1}Team Structure}{21}{subsection.4.4.1}%
-\contentsline {subsection}{\numberline {4.4.2}Management Reporting and Communication}{22}{subsection.4.4.2}%
-\contentsline {chapter}{\numberline {5}System Design}{23}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Introduction}{23}{section.5.1}%
-\contentsline {section}{\numberline {5.2}System Architecture Design}{23}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Mathematical Model for the Proposed System}{25}{section.5.3}%
-\contentsline {section}{\numberline {5.4}Data Design}{26}{section.5.4}%
-\contentsline {subsection}{\numberline {5.4.1}Database Description}{27}{subsection.5.4.1}%
-\contentsline {subsection}{\numberline {5.4.2}Component Design}{27}{subsection.5.4.2}%
-\contentsline {section}{\numberline {5.5}Results and Discussion}{27}{section.5.5}%
-\contentsline {chapter}{\numberline {6}Other Specifications}{30}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Advantages of the System}{30}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Limitations of the System}{31}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Applications of the System}{31}{section.6.3}%
-\contentsline {chapter}{\numberline {7}Validation and Testing}{32}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Testing Methodology}{32}{section.7.1}%
-\contentsline {section}{\numberline {7.2}Test Cases}{33}{section.7.2}%
-\contentsline {section}{\numberline {7.3}Validation of Results}{34}{section.7.3}%
-\contentsline {chapter}{\numberline {8}Conclusion \& Future Scope}{35}{chapter.8}%
-\contentsline {section}{\numberline {8.1}Conclusion}{35}{section.8.1}%
-\contentsline {section}{\numberline {8.2}Future Scope}{36}{section.8.2}%
-\contentsline {chapter}{\numberline {9}References}{37}{chapter.9}%
-\contentsline {chapter}{Annexure \numberline {A}Plagiarism Report}{40}{appendix.1.A}%
-\contentsline {chapter}{Annexure \numberline {B}Copyright}{41}{appendix.1.B}%
-\contentsline {chapter}{Annexure \numberline {C}Patents}{42}{appendix.1.C}%
-\contentsline {chapter}{Annexure \numberline {D}Research Publication}{43}{appendix.1.D}%
-\contentsline {chapter}{Annexure \numberline {E}Conference Certificates}{44}{appendix.1.E}%
-\contentsline {chapter}{Annexure \numberline {F}Project Competition Participation}{45}{appendix.1.F}%
-\contentsline {chapter}{Annexure \numberline {G}Sponsorship Documents}{46}{appendix.1.G}%
+\contentsline {section}{\numberline {1.1}Overview}{2}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Need and Relevance}{2}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Motivation}{3}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Problem Statement}{3}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Aim and Objectives}{3}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Project Scope and Limitations}{4}{section.1.6}%
+\contentsline {section}{\numberline {1.7}Organisation of the Report}{4}{section.1.7}%
+\contentsline {chapter}{\numberline {2}Literature Survey}{5}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Overview of Existing Research}{6}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Literature Survey}{6}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Literature Survey Description}{10}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Research Gap Analysis}{11}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Software Requirement Specification}{12}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Introduction}{13}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Purpose and Scope of Document}{13}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Characteristics of a Software Requirement Specification}{13}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.3}Overview of Responsibilities of Developer}{14}{subsection.3.1.3}%
+\contentsline {section}{\numberline {3.2}Usage Scenario}{14}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}User Profiles}{14}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Use Cases}{15}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Use Case View}{15}{subsection.3.2.3}%
+\contentsline {section}{\numberline {3.3}Data Model and Description}{16}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Data Description}{16}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Data Objects and Relationships}{16}{subsection.3.3.2}%
+\contentsline {section}{\numberline {3.4}Functional Model and Description}{17}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Data Flow Diagram}{17}{subsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.1.1}Level 0 Data Flow Diagram}{18}{subsubsection.3.4.1.1}%
+\contentsline {subsubsection}{\numberline {3.4.1.2}Level 1 Data Flow Diagram}{18}{subsubsection.3.4.1.2}%
+\contentsline {subsection}{\numberline {3.4.2}Description of Functions}{18}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Activity Diagram}{18}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.4.4}Non Functional Requirements}{19}{subsection.3.4.4}%
+\contentsline {subsection}{\numberline {3.4.5}State Diagram}{20}{subsection.3.4.5}%
+\contentsline {subsection}{\numberline {3.4.6}Design Constraints}{20}{subsection.3.4.6}%
+\contentsline {subsection}{\numberline {3.4.7}Software Interface Description}{20}{subsection.3.4.7}%
+\contentsline {chapter}{\numberline {4}Project Plan}{21}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Project Estimates}{22}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Reconciled Estimates}{22}{subsection.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.1.1}Cost Estimate}{22}{subsubsection.4.1.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.1.2}Time Estimates}{23}{subsubsection.4.1.1.2}%
+\contentsline {subsection}{\numberline {4.1.2}Project Resources}{23}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Risk Management w.r.t. NP Hard Analysis}{23}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Risk Identification}{23}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Risk Analysis}{24}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Overview of Risk Mitigation, Monitoring, Management}{24}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}Project Schedule}{24}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Project Task Set}{24}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Task Network}{25}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Timeline Chart}{25}{subsection.4.3.3}%
+\contentsline {section}{\numberline {4.4}Team Organization}{26}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Team Structure}{26}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Management Reporting and Communication}{26}{subsection.4.4.2}%
+\contentsline {chapter}{\numberline {5}System Design}{27}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Introduction}{28}{section.5.1}%
+\contentsline {section}{\numberline {5.2}System Architecture Design}{28}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Mathematical Model for the Proposed System}{30}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Data Design}{31}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Database Description}{32}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Component Design}{32}{subsection.5.4.2}%
+\contentsline {section}{\numberline {5.5}Results and Discussion}{32}{section.5.5}%
+\contentsline {chapter}{\numberline {6}Other Specifications}{35}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Advantages of the System}{36}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Limitations of the System}{36}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Applications of the System}{37}{section.6.3}%
+\contentsline {chapter}{\numberline {7}Validation and Testing}{38}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Testing Methodology}{39}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Test Cases}{40}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Validation of Results}{41}{section.7.3}%
+\contentsline {chapter}{\numberline {8}Conclusion \& Future Scope}{42}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Conclusion}{43}{section.8.1}%
+\contentsline {section}{\numberline {8.2}Future Scope}{43}{section.8.2}%
+\contentsline {chapter}{\numberline {9}References}{44}{chapter.9}%
+\contentsline {chapter}{Annexure \numberline {A}Plagiarism Report}{47}{appendix.1.A}%
+\contentsline {chapter}{Annexure \numberline {B}Copyright}{49}{appendix.1.B}%
+\contentsline {chapter}{Annexure \numberline {C}Patents}{51}{appendix.1.C}%
+\contentsline {chapter}{Annexure \numberline {D}Research Publication}{53}{appendix.1.D}%
+\contentsline {chapter}{Annexure \numberline {E}Conference Certificates}{55}{appendix.1.E}%
+\contentsline {chapter}{Annexure \numberline {F}Project Competition Participation}{57}{appendix.1.F}%
+\contentsline {chapter}{Annexure \numberline {G}Sponsorship Documents}{59}{appendix.1.G}%
 \contentsfinish 

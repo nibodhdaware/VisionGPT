@@ -97,17 +97,11 @@ export async function POST(req: NextRequest) {
           "_Reported via Hazard Lens_",
         ].filter(Boolean).join("\n");
 
-        const msgParams: any = {
+        await client.messages.create({
           from: `whatsapp:${twilioFrom}`,
           to: `whatsapp:${authorityPhone}`,
           body: msg,
-        };
-
-        if (imageUrl) {
-          msgParams.mediaUrl = [imageUrl];
-        }
-
-        await client.messages.create(msgParams);
+        });
 
         whatsappSent = true;
         whatsappReason = "sent";
