@@ -11,7 +11,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ key:
     }
     const ext = imageKey.split(".").pop()?.toLowerCase();
     const mime: Record<string, string> = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif" };
-    return new NextResponse(buffer, {
+    return new NextResponse(new Uint8Array(buffer), {
       headers: { "Content-Type": mime[ext || ""] || "application/octet-stream", "Cache-Control": "public, max-age=31536000, immutable" },
     });
   } catch {
