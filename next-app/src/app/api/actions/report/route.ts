@@ -73,7 +73,18 @@ export async function POST(req: NextRequest) {
     const twilioFrom = process.env.TWILIO_WHATSAPP_FROM;
     const authorityPhone = process.env.AUTHORITY_WHATSAPP_TO;
     const imageUrl = row.image_url || analysis.image_url;
-    const absoluteImageUrl = imageUrl?.startsWith("http") ? imageUrl : `${req.nextUrl.origin}${imageUrl}`;
+    const origin = req.nextUrl.origin;
+    let absoluteImageUrl: string | null = null;
+    if (imageUrl) {
+      if (imageUrl.startsWith("/api/image/")) {
+        absoluteImageUrl = `${origin}${imageUrl}`;
+      } else if (imageUrl.includes("r2.cloudflarestorage.com") || imageUrl.includes("r2.dev")) {
+        const keyMatch = imageUrl.match(/\/reports\/.+\.\w+$/);
+        if (keyMatch) absoluteImageUrl = `${origin}/api/image${keyMatch[0]}`;
+      } else if (imageUrl.startsWith("http")) {
+        absoluteImageUrl = imageUrl;
+      }
+    }
 
     if (notifyWhatsapp && enabled && accountSid && authToken && twilioFrom && authorityPhone) {
       try {
